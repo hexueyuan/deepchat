@@ -157,12 +157,12 @@
                   <Icon icon="lucide:plus" class="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" class="w-48">
-                <DropdownMenuItem @select="handleNewChat">
+              <DropdownMenuContent align="end" :side-offset="5" class="z-50 w-48 no-drag-override">
+                <DropdownMenuItem @click="handleNewChat">
                   <Icon icon="lucide:message-square-plus" class="mr-2 h-4 w-4" />
                   {{ t('chat.sidebar.newSession') }}
                 </DropdownMenuItem>
-                <DropdownMenuItem @select="handleNewTemporaryChat">
+                <DropdownMenuItem @click="handleNewTemporaryChat">
                   <Icon icon="lucide:clock" class="mr-2 h-4 w-4" />
                   {{ t('chat.sidebar.newTemporarySession') }}
                 </DropdownMenuItem>
@@ -1095,6 +1095,10 @@ onUnmounted(() => {
 }
 
 button {
+  -webkit-app-region: no-drag;
+}
+
+:global(.no-drag-override) {
   -webkit-app-region: no-drag;
 }
 
