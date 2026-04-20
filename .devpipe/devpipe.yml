@@ -1,0 +1,20 @@
+# DevPipe 项目配置
+
+# 文档存放目录（相对于仓库根目录，也支持绝对路径）
+# 默认为 .devpipe/docs/，每次开发迭代会在该目录下创建子目录存放产出文档
+docs_dir: docs/devpipe
+
+# 声明 Docker 容器需要映射的端口
+# ports:
+#   - 5173  # vite dev server
+#   - 4173  # vite preview
+
+# 额外挂载（宿主机 worktree 路径 -> 容器工作空间路径，双向同步）
+# 支持格式：
+#   - public          # 挂载到容器同路径
+#   - src/assets:dist/assets  # host:container 映射到不同路径
+# mounts:
+#   - public
+
+# Dashboard 启动端口（默认 5051）
+dashboard_port: 8858
