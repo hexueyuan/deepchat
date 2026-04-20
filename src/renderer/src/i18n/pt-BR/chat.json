@@ -276,14 +276,17 @@
     "compacted": "O contexto foi compactado automaticamente"
   },
   "newThread": {
-    "title": "Criar e explorar"
+    "title": "Criar e explorar",
+    "agentSelectLabel": "Selecionar Agent",
+    "temporaryToggleLabel": "Sessão temporária",
+    "temporaryToggleHint": "Sessão temporária: oculta na barra lateral, excluída automaticamente ao sair"
   },
   "permissionMode": {
     "default": "Permissões padrão",
     "fullAccess": "Acesso total"
   },
   "sidebar": {
-    "allAgents": "Todos os agentes",
+    "allAgents": "Todos os Agentes",
     "expandSidebar": "Expandir barra lateral",
     "collapseSidebar": "Recolher barra lateral",
     "remoteControlStatus": {

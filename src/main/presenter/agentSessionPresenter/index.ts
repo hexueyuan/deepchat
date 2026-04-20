@@ -262,11 +262,12 @@ export class AgentSessionPresenter {
     const agentType = await this.getAgentType(agentId)
     const deepChatAgentConfig =
       agentType === 'deepchat' ? await this.resolveDeepChatAgentConfigCompat(agentId) : null
-    const projectDir =
-      input.projectDir?.trim() ||
-      deepChatAgentConfig?.defaultProjectPath?.trim() ||
-      this.getDefaultProjectPathCompat() ||
-      null
+    const projectDir = input.isTemporary
+      ? input.projectDir?.trim() || null
+      : input.projectDir?.trim() ||
+        deepChatAgentConfig?.defaultProjectPath?.trim() ||
+        this.getDefaultProjectPathCompat() ||
+        null
     const disabledAgentTools =
       agentType === 'deepchat'
         ? this.normalizeDisabledAgentTools(

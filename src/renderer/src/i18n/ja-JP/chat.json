@@ -276,7 +276,10 @@
     "compacted": "コンテキストは自動圧縮されました"
   },
   "newThread": {
-    "title": "作成して探索"
+    "title": "作成して探索",
+    "agentSelectLabel": "Agentを選択",
+    "temporaryToggleLabel": "一時セッションにする",
+    "temporaryToggleHint": "一時セッション：サイドバーに表示されず、終了時に自動削除されます"
   },
   "permissionMode": {
     "default": "デフォルト権限",

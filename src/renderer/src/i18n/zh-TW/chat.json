@@ -276,7 +276,10 @@
     }
   },
   "newThread": {
-    "title": "建構與探索"
+    "title": "建構與探索",
+    "agentSelectLabel": "選擇 Agent",
+    "temporaryToggleLabel": "設為臨時會話",
+    "temporaryToggleHint": "臨時會話：不顯示在側邊欄，退出時自動刪除"
   },
   "permissionMode": {
     "default": "預設權限",

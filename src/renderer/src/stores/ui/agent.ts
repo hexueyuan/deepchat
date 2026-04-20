@@ -57,11 +57,14 @@ export const useAgentStore = defineStore('agent', () => {
         config: a.config,
         installState: a.installState ?? null
       }))
+      const enabled = agents.value.filter((a) => a.enabled)
       if (selectedAgentId.value !== null) {
         const selectedAgent = agents.value.find((agent) => agent.id === selectedAgentId.value)
         if (!selectedAgent || !selectedAgent.enabled) {
-          selectedAgentId.value = null
+          selectedAgentId.value = enabled[0]?.id ?? null
         }
+      } else if (enabled.length > 0) {
+        selectedAgentId.value = enabled[0].id
       }
     } catch (e) {
       error.value = `Failed to load agents: ${e}`
@@ -75,7 +78,9 @@ export const useAgentStore = defineStore('agent', () => {
   }
 
   function selectAgent(id: string | null): void {
-    selectedAgentId.value = selectedAgentId.value === id ? null : id
+    if (id !== null) {
+      selectedAgentId.value = id
+    }
   }
 
   window.electron.ipcRenderer.on(

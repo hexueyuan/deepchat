@@ -276,7 +276,10 @@
     "compacted": "ההקשר נדחס אוטומטית"
   },
   "newThread": {
-    "title": "בנו וגלו"
+    "title": "בנו וגלו",
+    "agentSelectLabel": "בחר Agent",
+    "temporaryToggleLabel": "שיחה זמנית",
+    "temporaryToggleHint": "שיחה זמנית: מוסתרת מסרגל הצד, נמחקת אוטומטית ביציאה"
   },
   "permissionMode": {
     "default": "הרשאות ברירת מחדל",

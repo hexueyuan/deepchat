@@ -276,7 +276,10 @@
     "compacted": "Konteksten blev automatisk komprimeret"
   },
   "newThread": {
-    "title": "Byg og udforsk"
+    "title": "Byg og udforsk",
+    "agentSelectLabel": "Vælg Agent",
+    "temporaryToggleLabel": "Midlertidig session",
+    "temporaryToggleHint": "Midlertidig session: skjult fra sidebjælken, slettes automatisk ved afslutning"
   },
   "permissionMode": {
     "default": "Standardtilladelser",

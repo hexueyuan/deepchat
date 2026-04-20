@@ -13,11 +13,11 @@
             <Button
               class="flex items-center justify-center w-9 h-9 rounded-xl border transition-all duration-150"
               :class="
-                sidebarSelectedAgentId === null
+                sidebarFilterAgentId === null
                   ? 'bg-card/50 border-white/70 dark:border-white/20 ring-1 ring-black/10 hover:bg-white/30 dark:hover:bg-white/10'
                   : 'bg-transparent border-none hover:bg-white/30 dark:hover:bg-white/10 shadow-none'
               "
-              @click="handleAgentSelect(null)"
+              @click="handleFilterAllAgents"
             >
               <Icon icon="lucide:layers" class="w-4 h-4 text-foreground/80" />
             </Button>
@@ -34,7 +34,7 @@
               size="icon"
               class="flex items-center justify-center w-9 h-9 rounded-xl border transition-all duration-150"
               :class="
-                sidebarSelectedAgentId === agent.id
+                sidebarFilterAgentId === agent.id
                   ? 'bg-card/50 border-white/80 dark:border-white/20 ring-1 ring-black/10 hover:bg-white/30 dark:hover:bg-white/10'
                   : 'bg-transparent border-none hover:bg-white/30 dark:hover:bg-white/10 shadow-none'
               "
@@ -148,26 +148,18 @@
                   : t('chat.sidebar.groupByProject')
               }}</TooltipContent>
             </Tooltip>
-            <DropdownMenu>
-              <DropdownMenuTrigger as-child>
+            <Tooltip>
+              <TooltipTrigger as-child>
                 <button
                   class="flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-150"
                   :title="t('common.newChat')"
+                  @click="handleNewChat"
                 >
                   <Icon icon="lucide:plus" class="w-4 h-4" />
                 </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" :side-offset="5" class="z-50 w-48 no-drag-override">
-                <DropdownMenuItem @click="handleNewChat">
-                  <Icon icon="lucide:message-square-plus" class="mr-2 h-4 w-4" />
-                  {{ t('chat.sidebar.newSession') }}
-                </DropdownMenuItem>
-                <DropdownMenuItem @click="handleNewTemporaryChat">
-                  <Icon icon="lucide:clock" class="mr-2 h-4 w-4" />
-                  {{ t('chat.sidebar.newTemporarySession') }}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </TooltipTrigger>
+              <TooltipContent>{{ t('common.newChat') }}</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
@@ -403,12 +395,6 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger
 } from '@shadcn/components/ui/context-menu'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@shadcn/components/ui/dropdown-menu'
 import { usePresenter, useRemoteControlPresenter } from '@/composables/usePresenter'
 import { SETTINGS_EVENTS } from '@/events'
 import { useAgentStore } from '@/stores/ui/agent'
@@ -507,15 +493,15 @@ let agentSwitchSeq = 0
 let agentSwitchQueue: Promise<void> = Promise.resolve()
 let remoteControlStatusTimer: ReturnType<typeof setInterval> | null = null
 let pinFeedbackTimer: number | null = null
+// Sidebar filter: null = show all agents' sessions, string = filter by agent
+const sidebarFilterAgentId = ref<string | null>(null)
 const sidebarSelectedAgentId = computed(() => {
   const activeSessionAgentId = sessionStore.activeSession?.agentId?.trim()
   if (sessionStore.hasActiveSession && activeSessionAgentId) {
     return activeSessionAgentId
   }
 
-  const selectedAgentId =
-    typeof agentStore.selectedAgentId === 'string' ? agentStore.selectedAgentId.trim() : ''
-  return selectedAgentId || null
+  return sidebarFilterAgentId.value
 })
 
 const selectedAgentName = computed(() => {
@@ -811,18 +797,18 @@ const handleNewChat = () => {
   void sessionStore.startNewConversation({ refresh: true })
 }
 
-const handleNewTemporaryChat = () => {
-  void sessionStore.startNewTemporaryConversation({ refresh: true })
+const handleFilterAllAgents = () => {
+  sidebarFilterAgentId.value = null
 }
 
 const handleAgentSelect = async (id: string | null) => {
+  if (id === null) return
+  sidebarFilterAgentId.value = id
   const requestSeq = ++agentSwitchSeq
 
   agentSwitchQueue = agentSwitchQueue
     .then(async () => {
-      const currentAgentId = sidebarSelectedAgentId.value
-      const nextAgentId = currentAgentId === id ? null : id
-      if (nextAgentId === currentAgentId) {
+      if (agentStore.selectedAgentId === id) {
         return
       }
 
@@ -842,7 +828,7 @@ const handleAgentSelect = async (id: string | null) => {
         return
       }
 
-      agentStore.setSelectedAgent(nextAgentId)
+      agentStore.setSelectedAgent(id)
     })
     .catch((error) => {
       console.warn('[WindowSideBar] Agent switch pipeline failed:', error)

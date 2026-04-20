@@ -13,43 +13,109 @@
           {{ t('chat.newThread.title') }}
         </h1>
 
-        <!-- Project selector -->
-        <DropdownMenu>
-          <DropdownMenuTrigger as-child>
-            <Button
-              variant="ghost"
-              size="sm"
-              class="h-7 px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-6"
-            >
-              <Icon icon="lucide:folder" class="w-3.5 h-3.5" />
-              <span>{{ selectedProjectName }}</span>
-              <Icon icon="lucide:chevron-down" class="w-3 h-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center" class="min-w-[200px]">
-            <DropdownMenuLabel class="text-xs">{{ t('common.project.recent') }}</DropdownMenuLabel>
-            <DropdownMenuItem
-              v-for="project in projectStore.projects"
-              :key="project.path"
-              class="gap-2 text-xs py-1.5 px-2"
-              @click="projectStore.selectProject(project.path)"
-            >
-              <Icon icon="lucide:folder" class="w-3.5 h-3.5 text-muted-foreground" />
-              <div class="flex flex-col min-w-0">
-                <span class="truncate">{{ project.name }}</span>
-                <span class="text-[10px] text-muted-foreground truncate">{{ project.path }}</span>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              class="gap-2 text-xs py-1.5 px-2"
-              @click="projectStore.openFolderPicker()"
-            >
-              <Icon icon="lucide:folder-open" class="w-3.5 h-3.5 text-muted-foreground" />
-              <span>{{ t('common.project.openFolder') }}</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <!-- Project selector & Temporary session toggle -->
+        <div class="flex items-center gap-2 mb-6">
+          <!-- Agent selector -->
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button
+                variant="ghost"
+                size="sm"
+                class="h-7 px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <AgentAvatar
+                  :agent="selectedAgent"
+                  class-name="w-3.5 h-3.5"
+                  fallback-class-name="rounded-sm"
+                />
+                <span class="max-w-[120px] truncate">{{ selectedAgentName }}</span>
+                <Icon icon="lucide:chevron-down" class="w-3 h-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" class="min-w-[200px]">
+              <DropdownMenuLabel class="text-xs">{{
+                t('chat.newThread.agentSelectLabel')
+              }}</DropdownMenuLabel>
+              <DropdownMenuItem
+                v-for="agent in agentStore.enabledAgents"
+                :key="agent.id"
+                class="gap-2 text-xs py-1.5 px-2"
+                :class="{ 'bg-accent': agent.id === selectedAgent.id }"
+                @click="agentStore.setSelectedAgent(agent.id)"
+              >
+                <AgentAvatar :agent="agent" class-name="w-4 h-4" fallback-class-name="rounded-sm" />
+                <span class="truncate">{{ agent.name }}</span>
+                <span
+                  v-if="agent.type === 'acp'"
+                  class="ml-auto text-[10px] text-muted-foreground px-1 py-0.5 rounded bg-muted"
+                >
+                  ACP
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu v-if="!isTemporaryToggle">
+            <DropdownMenuTrigger as-child>
+              <Button
+                variant="ghost"
+                size="sm"
+                class="h-7 px-2.5 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <Icon icon="lucide:folder" class="w-3.5 h-3.5" />
+                <span>{{ selectedProjectName }}</span>
+                <Icon icon="lucide:chevron-down" class="w-3 h-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" class="min-w-[200px]">
+              <DropdownMenuLabel class="text-xs">{{
+                t('common.project.recent')
+              }}</DropdownMenuLabel>
+              <DropdownMenuItem
+                v-for="project in projectStore.projects"
+                :key="project.path"
+                class="gap-2 text-xs py-1.5 px-2"
+                @click="projectStore.selectProject(project.path)"
+              >
+                <Icon icon="lucide:folder" class="w-3.5 h-3.5 text-muted-foreground" />
+                <div class="flex flex-col min-w-0">
+                  <span class="truncate">{{ project.name }}</span>
+                  <span class="text-[10px] text-muted-foreground truncate">{{ project.path }}</span>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                class="gap-2 text-xs py-1.5 px-2"
+                @click="projectStore.openFolderPicker()"
+              >
+                <Icon icon="lucide:folder-open" class="w-3.5 h-3.5 text-muted-foreground" />
+                <span>{{ t('common.project.openFolder') }}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <button
+                class="flex items-center gap-1.5 h-7 px-2.5 rounded-full text-xs border transition-colors"
+                :class="
+                  isTemporaryToggle
+                    ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                    : 'text-muted-foreground hover:text-foreground border-dashed border-muted-foreground/30 hover:border-muted-foreground/50'
+                "
+                :disabled="isAcpSelectedAgent"
+                @click="isTemporaryToggle = !isTemporaryToggle"
+              >
+                <Icon icon="lucide:clock" class="w-3.5 h-3.5" />
+                <span>{{
+                  isTemporaryToggle
+                    ? t('chat.topbar.temporaryBadge')
+                    : t('chat.newThread.temporaryToggleLabel')
+                }}</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{{ t('chat.newThread.temporaryToggleHint') }}</TooltipContent>
+          </Tooltip>
+        </div>
 
         <!-- Input area -->
         <ChatInputBox
@@ -84,7 +150,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { TooltipProvider } from '@shadcn/components/ui/tooltip'
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent
+} from '@shadcn/components/ui/tooltip'
 import { Button } from '@shadcn/components/ui/button'
 import {
   DropdownMenu,
@@ -95,11 +166,13 @@ import {
   DropdownMenuTrigger
 } from '@shadcn/components/ui/dropdown-menu'
 import { Icon } from '@iconify/vue'
+import AgentAvatar from '@/components/icons/AgentAvatar.vue'
 import ChatInputBox from '@/components/chat/ChatInputBox.vue'
 import ChatInputToolbar from '@/components/chat/ChatInputToolbar.vue'
 import ChatStatusBar from '@/components/chat/ChatStatusBar.vue'
 import { useProjectStore } from '@/stores/ui/project'
 import { useSessionStore } from '@/stores/ui/session'
+import { usePageRouterStore } from '@/stores/ui/pageRouter'
 import { useAgentStore } from '@/stores/ui/agent'
 import { useModelStore } from '@/stores/modelStore'
 import { useDraftStore, type StartDeeplinkPayload } from '@/stores/ui/draft'
@@ -114,6 +187,7 @@ import { isChatSelectableModelType, type ModelType } from '@shared/model'
 
 const projectStore = useProjectStore()
 const sessionStore = useSessionStore()
+const pageRouter = usePageRouterStore()
 const agentStore = useAgentStore()
 const modelStore = useModelStore()
 const draftStore = useDraftStore()
@@ -122,6 +196,7 @@ const agentSessionPresenter = usePresenter('agentSessionPresenter')
 const { t } = useI18n()
 
 const message = ref('')
+const isTemporaryToggle = ref(false)
 const attachedFiles = ref<MessageFile[]>([])
 const pendingSkills = ref<string[]>([])
 const chatInputRef = ref<{
@@ -161,7 +236,7 @@ const selectedAgent = computed(() => {
     return agentStore.selectedAgent
   }
 
-  return { id: selectedAgentId, type: resolveAgentType(selectedAgentId) }
+  return { id: selectedAgentId, name: selectedAgentId, type: resolveAgentType(selectedAgentId) }
 })
 const isAcpSelectedAgent = computed(() => selectedAgent.value.type === 'acp')
 const normalizeProjectPath = (value: string | null | undefined) => {
@@ -170,6 +245,9 @@ const normalizeProjectPath = (value: string | null | undefined) => {
 }
 const selectedProjectName = computed(
   () => projectStore.selectedProject?.name ?? t('common.project.select')
+)
+const selectedAgentName = computed(
+  () => (selectedAgent.value as { name?: string })?.name ?? t('chat.newThread.agentSelectLabel')
 )
 const isAcpWorkdirMissing = computed(() => {
   if (!isAcpSelectedAgent.value) {
@@ -352,7 +430,7 @@ async function submitText(text: string, files: MessageFile[]) {
   await sessionStore.createSession({
     message: text,
     files,
-    projectDir: projectStore.selectedProject?.path,
+    projectDir: isTemporaryToggle.value ? undefined : projectStore.selectedProject?.path,
     agentId,
     providerId,
     modelId,
@@ -519,6 +597,9 @@ watch(
 watch(
   () => [selectedAgent.value.id, selectedAgent.value.type] as const,
   () => {
+    if (isAcpSelectedAgent.value) {
+      isTemporaryToggle.value = false
+    }
     const task = applyDraftDefaultsForSelectedAgent().finally(() => {
       if (currentDraftDefaultsTask === task) {
         currentDraftDefaultsTask = null
@@ -549,7 +630,28 @@ watch(
   { immediate: true }
 )
 
+const savedProjectPath = ref<string | null>(null)
+
+watch(isTemporaryToggle, (val) => {
+  sessionStore.nextSessionIsTemporary = val
+  if (val) {
+    savedProjectPath.value = projectStore.selectedProject?.path ?? null
+  } else if (savedProjectPath.value) {
+    projectStore.selectProject(savedProjectPath.value)
+    savedProjectPath.value = null
+  }
+})
+
+watch(
+  () => pageRouter.newThreadRefreshKey,
+  () => {
+    isTemporaryToggle.value = false
+  }
+)
+
 onMounted(() => {
+  isTemporaryToggle.value = false
+  sessionStore.nextSessionIsTemporary = false
   draftStore.projectDir = projectStore.selectedProject?.path
 })
 </script>

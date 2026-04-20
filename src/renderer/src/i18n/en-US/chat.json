@@ -279,7 +279,10 @@
     }
   },
   "newThread": {
-    "title": "Build and explore"
+    "title": "Build and explore",
+    "agentSelectLabel": "Select Agent",
+    "temporaryToggleLabel": "Temporary session",
+    "temporaryToggleHint": "Temporary session: hidden from sidebar, auto-deleted on quit"
   },
   "floatingWidget": {
     "title": "Task Overview",

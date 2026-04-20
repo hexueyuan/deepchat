@@ -276,7 +276,10 @@
     "compacted": "زمینه به‌صورت خودکار فشرده شد"
   },
   "newThread": {
-    "title": "بسازید و کاوش کنید"
+    "title": "بسازید و کاوش کنید",
+    "agentSelectLabel": "انتخاب Agent",
+    "temporaryToggleLabel": "جلسه موقت",
+    "temporaryToggleHint": "جلسه موقت: در نوار کناری پنهان است و هنگام خروج به‌طور خودکار حذف می‌شود"
   },
   "permissionMode": {
     "default": "مجوزهای پیش‌فرض",

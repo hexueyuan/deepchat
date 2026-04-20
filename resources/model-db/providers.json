@@ -160639,7 +160639,7 @@
             "default": true
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160664,7 +160664,7 @@
             "default": true
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160689,7 +160689,7 @@
             "default": true
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160713,7 +160713,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160737,7 +160737,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160761,7 +160761,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160785,7 +160785,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160809,7 +160809,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160834,7 +160834,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160859,7 +160859,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "embedding"
         },
         {
@@ -160884,7 +160884,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "embedding"
         },
         {
@@ -160910,7 +160910,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160936,7 +160936,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160962,7 +160962,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -160988,7 +160988,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161014,7 +161014,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161040,7 +161040,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161066,7 +161066,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161092,7 +161092,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161118,7 +161118,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161144,7 +161144,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161170,7 +161170,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161194,7 +161194,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161220,7 +161220,7 @@
             "default": true
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161244,7 +161244,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161264,7 +161264,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-1-0-lite-t2v-250428",
@@ -161283,7 +161283,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-1-0-pro-250528",
@@ -161303,7 +161303,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-1-0-pro-fast-251015",
@@ -161323,7 +161323,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-1-5-pro-251215",
@@ -161344,7 +161344,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-2-0-260128",
@@ -161366,7 +161366,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedance-2-0-fast-260128",
@@ -161388,7 +161388,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z"
+          "last_updated": "2026-04-20T10:46:12Z"
         },
         {
           "id": "doubao-seedream-3-0-t2i-250415",
@@ -161407,7 +161407,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "imageGeneration"
         },
         {
@@ -161424,7 +161424,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "imageGeneration"
         },
         {
@@ -161441,7 +161441,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "imageGeneration"
         },
         {
@@ -161462,7 +161462,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "imageGeneration"
         },
         {
@@ -161482,7 +161482,7 @@
             "supported": false
           },
           "attachment": true,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "imageGeneration"
         },
         {
@@ -161502,7 +161502,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161527,7 +161527,7 @@
             "default": true
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161547,7 +161547,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161567,7 +161567,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161587,7 +161587,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161607,7 +161607,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         },
         {
@@ -161627,7 +161627,7 @@
             "supported": false
           },
           "attachment": false,
-          "last_updated": "2026-04-19T15:28:38Z",
+          "last_updated": "2026-04-20T10:46:12Z",
           "type": "chat"
         }
       ]
@@ -165968,6 +165968,70 @@
       "name": "AIHubMix",
       "display_name": "AIHubMix",
       "models": [
+        {
+          "id": "qwen3.6-35b-a3b",
+          "name": "qwen3.6-35b-a3b",
+          "display_name": "qwen3.6-35b-a3b",
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ]
+          },
+          "limit": {
+            "context": 254000,
+            "output": 254000
+          },
+          "tool_call": true,
+          "reasoning": {
+            "supported": true,
+            "default": true
+          },
+          "extra_capabilities": {
+            "reasoning": {
+              "supported": true
+            }
+          },
+          "cost": {
+            "input": 0.254,
+            "output": 1.524,
+            "cache_read": 0.0254
+          },
+          "type": "chat"
+        },
+        {
+          "id": "qwen3.6-flash",
+          "name": "qwen3.6-flash",
+          "display_name": "qwen3.6-flash",
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ]
+          },
+          "limit": {
+            "context": 991000,
+            "output": 991000
+          },
+          "tool_call": true,
+          "reasoning": {
+            "supported": true,
+            "default": true
+          },
+          "extra_capabilities": {
+            "reasoning": {
+              "supported": true
+            }
+          },
+          "cost": {
+            "input": 0.169,
+            "output": 1.014,
+            "cache_read": 0.0169
+          },
+          "type": "chat"
+        },
         {
           "id": "claude-opus-4-7",
           "name": "claude-opus-4-7",
@@ -171195,6 +171259,53 @@
           "type": "chat"
         },
         {
+          "id": "wan2.2-t2v-plus",
+          "name": "wan2.2-t2v-plus",
+          "display_name": "wan2.2-t2v-plus",
+          "modalities": {
+            "input": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 8192
+          },
+          "tool_call": false,
+          "reasoning": {
+            "supported": false
+          },
+          "cost": {
+            "input": 2,
+            "output": 0
+          },
+          "type": "chat"
+        },
+        {
+          "id": "wan2.5-i2v-preview",
+          "name": "wan2.5-i2v-preview",
+          "display_name": "wan2.5-i2v-preview",
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ]
+          },
+          "limit": {
+            "context": 8192,
+            "output": 8192
+          },
+          "tool_call": false,
+          "reasoning": {
+            "supported": false
+          },
+          "cost": {
+            "input": 2,
+            "output": 0
+          },
+          "type": "chat"
+        },
+        {
           "id": "wan2.5-t2v-preview",
           "name": "wan2.5-t2v-preview",
           "display_name": "wan2.5-t2v-preview",
@@ -171473,53 +171584,6 @@
           "id": "wan2.2-i2v-plus",
           "name": "wan2.2-i2v-plus",
           "display_name": "wan2.2-i2v-plus",
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ]
-          },
-          "limit": {
-            "context": 8192,
-            "output": 8192
-          },
-          "tool_call": false,
-          "reasoning": {
-            "supported": false
-          },
-          "cost": {
-            "input": 2,
-            "output": 0
-          },
-          "type": "chat"
-        },
-        {
-          "id": "wan2.2-t2v-plus",
-          "name": "wan2.2-t2v-plus",
-          "display_name": "wan2.2-t2v-plus",
-          "modalities": {
-            "input": [
-              "text"
-            ]
-          },
-          "limit": {
-            "context": 8192,
-            "output": 8192
-          },
-          "tool_call": false,
-          "reasoning": {
-            "supported": false
-          },
-          "cost": {
-            "input": 2,
-            "output": 0
-          },
-          "type": "chat"
-        },
-        {
-          "id": "wan2.5-i2v-preview",
-          "name": "wan2.5-i2v-preview",
-          "display_name": "wan2.5-i2v-preview",
           "modalities": {
             "input": [
               "text",
@@ -186487,7 +186551,7 @@
             ]
           },
           "limit": {
-            "context": 1048576,
+            "context": 1000000,
             "output": 8192
           },
           "tool_call": true,
@@ -196426,6 +196490,31 @@
                 "thinking_blocks"
               ]
             }
+          },
+          "type": "chat"
+        },
+        {
+          "id": "moonshotai/kimi-k2.6",
+          "name": "Kimi K2.6",
+          "display_name": "Kimi K2.6",
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "video"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "tool_call": true,
+          "reasoning": {
+            "supported": true,
+            "default": true
           },
           "type": "chat"
         },

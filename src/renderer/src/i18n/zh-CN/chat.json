@@ -279,7 +279,10 @@
     }
   },
   "newThread": {
-    "title": "构建与探索"
+    "title": "构建与探索",
+    "agentSelectLabel": "选择 Agent",
+    "temporaryToggleLabel": "设为临时会话",
+    "temporaryToggleHint": "临时会话：不显示在侧边栏，退出时自动删除"
   },
   "floatingWidget": {
     "title": "任务总览",

@@ -276,7 +276,10 @@
     "compacted": "컨텍스트가 자동으로 압축되었습니다"
   },
   "newThread": {
-    "title": "만들고 탐색하기"
+    "title": "만들고 탐색하기",
+    "agentSelectLabel": "Agent 선택",
+    "temporaryToggleLabel": "임시 세션으로 설정",
+    "temporaryToggleHint": "임시 세션: 사이드바에 표시되지 않으며 종료 시 자동 삭제됩니다"
   },
   "permissionMode": {
     "default": "기본 권한",
