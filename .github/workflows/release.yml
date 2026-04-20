@@ -232,6 +232,9 @@ jobs:
         run: |
           mkdir -p release_assets
 
+          echo "=== Artifact directory structure ==="
+          ls -laR artifacts/ || echo "No artifacts directory"
+
           if [ -d "artifacts/deepchat-mac-arm64" ]; then
             cp artifacts/deepchat-mac-arm64/*.dmg release_assets/ 2>/dev/null || true
             cp artifacts/deepchat-mac-arm64/*.zip release_assets/ 2>/dev/null || true
