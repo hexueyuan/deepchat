@@ -1530,6 +1530,8 @@ export interface IUpgradePresenter {
   clearMockUpdate(): boolean
   restartToUpdate(): boolean
   restartApp(): void
+  selectLocalZip(): Promise<string | null>
+  applyLocalZip(zipPath: string): Promise<boolean>
   isUpdatingInProgress(): boolean
 }
 // Update status types

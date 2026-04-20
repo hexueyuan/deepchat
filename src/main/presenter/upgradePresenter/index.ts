@@ -1,4 +1,4 @@
-import { app, shell } from 'electron'
+import { app, dialog, shell } from 'electron'
 import {
   IUpgradePresenter,
   UpdateStatus,
@@ -10,6 +10,7 @@ import { UPDATE_EVENTS, WINDOW_EVENTS } from '@/events'
 import { presenter } from '@/presenter'
 import electronUpdater from 'electron-updater'
 import type { UpdateInfo } from 'electron-updater'
+import { execSync, spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
@@ -84,7 +85,6 @@ export class UpgradePresenter implements IUpgradePresenter {
   private _progress: UpdateProgress | null = null
   private _error: string | null = null
   private _versionInfo: VersionInfo | null = null
-  private _lastCheckTime: number = 0 // 上次检查更新的时间戳
   private _lastCheckType?: string
   private _updateMarkerPath: string
   private _previousUpdateFailed: boolean = false // 标记上次更新是否失败
@@ -187,9 +187,6 @@ export class UpgradePresenter implements IUpgradePresenter {
       this.markUpdateDownloaded(info)
     })
 
-    // 监听应用获得焦点事件
-    eventBus.on(WINDOW_EVENTS.APP_FOCUS, this.handleAppFocus.bind(this))
-
     // 应用启动时检查是否有未完成的更新
     this.checkPendingUpdate()
   }
@@ -288,16 +285,6 @@ export class UpgradePresenter implements IUpgradePresenter {
     })
   }
 
-  // 处理应用获得焦点事件
-  private handleAppFocus(): void {
-    const now = Date.now()
-    const twelveHoursInMs = 12 * 60 * 60 * 1000 // 12小时的毫秒数
-    // 如果距离上次检查更新超过12小时，则重新检查
-    if (now - this._lastCheckTime > twelveHoursInMs) {
-      this.checkUpdate('autoCheck')
-    }
-  }
-
   /**
    *
    * @param type 检查更新的类型，'autoCheck'表示自动检查
@@ -323,7 +310,6 @@ export class UpgradePresenter implements IUpgradePresenter {
       autoUpdater.channel = updateChannel === UPDATE_CHANNEL_BETA ? UPDATE_CHANNEL_BETA : 'latest'
 
       await autoUpdater.checkForUpdates()
-      this._lastCheckTime = Date.now()
     } catch (error: Error | unknown) {
       this._status = 'error'
       this._error = error instanceof Error ? error.message : String(error)
@@ -583,5 +569,108 @@ export class UpgradePresenter implements IUpgradePresenter {
   // Get update flag
   isUpdatingInProgress(): boolean {
     return this._isUpdating
+  }
+
+  private resolveAppBundlePath(): string | null {
+    if (process.platform !== 'darwin') return null
+    let current = app.getAppPath()
+    while (current && current !== '/') {
+      if (current.endsWith('.app')) return current
+      current = path.dirname(current)
+    }
+    return null
+  }
+
+  async selectLocalZip(): Promise<string | null> {
+    if (process.platform !== 'darwin') {
+      return null
+    }
+
+    const lastDir = this._configPresenter.getSetting<string>('localUpdateDir')
+
+    const result = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      defaultPath: lastDir || app.getPath('home'),
+      filters: [{ name: 'ZIP Files', extensions: ['zip'] }]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return null
+    }
+
+    const zipPath = result.filePaths[0]
+    this._configPresenter.setSetting('localUpdateDir', path.dirname(zipPath))
+    return zipPath
+  }
+
+  async applyLocalZip(zipPath: string): Promise<boolean> {
+    if (process.platform !== 'darwin') {
+      return false
+    }
+
+    const currentAppPath = this.resolveAppBundlePath()
+    if (!currentAppPath) {
+      eventBus.sendToRenderer(UPDATE_EVENTS.ERROR, SendTarget.ALL_WINDOWS, {
+        error: 'Cannot determine current .app bundle path (not supported in dev mode)'
+      })
+      return false
+    }
+
+    const tempDir = path.join(app.getPath('temp'), `deepchat-local-update-${Date.now()}`)
+    try {
+      fs.mkdirSync(tempDir, { recursive: true })
+      execSync(`ditto -xk "${zipPath}" "${tempDir}"`, { timeout: 120000 })
+    } catch (e) {
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true })
+      } catch {}
+      eventBus.sendToRenderer(UPDATE_EVENTS.ERROR, SendTarget.ALL_WINDOWS, {
+        error: `Failed to extract zip: ${e instanceof Error ? e.message : String(e)}`
+      })
+      return false
+    }
+
+    let extractedAppPath: string | null = null
+    try {
+      const entries = fs.readdirSync(tempDir)
+      const appEntry = entries.find((e) => e.endsWith('.app'))
+      if (appEntry) {
+        extractedAppPath = path.join(tempDir, appEntry)
+      }
+    } catch {}
+
+    if (!extractedAppPath || !fs.existsSync(extractedAppPath)) {
+      try {
+        fs.rmSync(tempDir, { recursive: true, force: true })
+      } catch {}
+      eventBus.sendToRenderer(UPDATE_EVENTS.ERROR, SendTarget.ALL_WINDOWS, {
+        error: 'No .app bundle found in the zip file'
+      })
+      return false
+    }
+
+    const pid = process.pid
+    const scriptPath = path.join(tempDir, 'swap-update.sh')
+    const script = [
+      '#!/bin/bash',
+      `while kill -0 ${pid} 2>/dev/null; do sleep 0.5; done`,
+      `rm -rf "${currentAppPath}"`,
+      `mv "${extractedAppPath}" "${currentAppPath}"`,
+      `open "${currentAppPath}"`,
+      `rm -rf "${tempDir}"`
+    ].join('\n')
+
+    fs.writeFileSync(scriptPath, script, { mode: 0o755 })
+
+    this.beginInstallFlow(() => {
+      const child = spawn('/bin/bash', [scriptPath], {
+        detached: true,
+        stdio: 'ignore'
+      })
+      child.unref()
+      app.exit()
+    })
+
+    return true
   }
 }

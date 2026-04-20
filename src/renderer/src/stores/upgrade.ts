@@ -74,7 +74,9 @@ export const useUpgradeStore = defineStore('upgrade', () => {
   const isRestarting = ref(false)
   const updateError = ref<string | null>(null)
   const isSilent = ref(true)
+  const remoteCheckTriggered = ref(false)
   const platform = ref<string | null>(null)
+  const appVersion = ref<string>('')
   const listenersReady = ref(false)
   let externalMutationToken = 0
   let latestSyncRequestId = 0
@@ -104,10 +106,16 @@ export const useUpgradeStore = defineStore('upgrade', () => {
   const isChecking = computed(() => updateState.value === 'checking')
   const isDownloading = computed(() => updateState.value === 'downloading')
   const isReadyToInstall = computed(() => updateState.value === 'ready_to_install')
-  const shouldShowUpdateNotes = computed(() => hasUpdate.value)
+  const shouldShowUpdateNotes = computed(() => {
+    if (!remoteCheckTriggered.value) return false
+    if (!hasUpdate.value || !updateInfo.value?.version || !appVersion.value) return false
+    const remote = updateInfo.value.version.replace(/^v/, '')
+    const local = appVersion.value.replace(/^v/, '')
+    return remote !== local
+  })
   const shouldShowTopbarInstallButton = computed(() => isReadyToInstall.value)
   const showManualDownloadOptions = computed(
-    () => rawStatus.value === 'error' && Boolean(updateInfo.value)
+    () => rawStatus.value === 'error' && shouldShowUpdateNotes.value
   )
 
   const applyProgress = (
@@ -211,6 +219,7 @@ export const useUpgradeStore = defineStore('upgrade', () => {
     try {
       const deviceInfo = await devicePresenter.getDeviceInfo()
       platform.value = deviceInfo?.platform ?? null
+      appVersion.value = (await devicePresenter.getAppVersion()) ?? ''
     } catch (error) {
       console.error('Failed to load device info:', error)
     }
@@ -220,6 +229,7 @@ export const useUpgradeStore = defineStore('upgrade', () => {
 
   const checkUpdate = async (silent = true) => {
     isSilent.value = silent
+    remoteCheckTriggered.value = true
     if (isChecking.value) return rawStatus.value
 
     try {
@@ -269,6 +279,34 @@ export const useUpgradeStore = defineStore('upgrade', () => {
       console.error('Failed to clear mock update:', error)
       applyStatus('error', updateInfo.value, error instanceof Error ? error.message : String(error))
       return 'error'
+    }
+  }
+
+  const selectedLocalZip = ref<string | null>(null)
+
+  const selectLocalZip = async () => {
+    try {
+      const zipPath = await upgradeP.selectLocalZip()
+      selectedLocalZip.value = zipPath
+      return zipPath
+    } catch (error) {
+      console.error('Failed to select local zip:', error)
+      return null
+    }
+  }
+
+  const applyLocalZip = async () => {
+    if (!selectedLocalZip.value) return false
+    try {
+      const success = await upgradeP.applyLocalZip(selectedLocalZip.value)
+      if (success) {
+        isRestarting.value = true
+      }
+      return success
+    } catch (error) {
+      console.error('Failed to apply local zip:', error)
+      applyStatus('error', updateInfo.value, error instanceof Error ? error.message : String(error))
+      return false
     }
   }
 
@@ -370,6 +408,9 @@ export const useUpgradeStore = defineStore('upgrade', () => {
     startUpdate,
     mockDownloadedUpdate,
     clearMockUpdate,
-    handleUpdate
+    handleUpdate,
+    selectedLocalZip,
+    selectLocalZip,
+    applyLocalZip
   }
 })

@@ -45,25 +45,23 @@
           </div>
         </div>
 
-        <div class="mt-4 flex items-center gap-4">
-          <label class="text-sm font-medium">{{ t('about.updateChannel') }}:</label>
-          <div class="min-w-32 max-w-48">
-            <Select v-model="updateChannel" @update:model-value="setUpdateChannel">
-              <SelectTrigger>
-                <SelectValue :placeholder="t('about.updateChannel')" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="stable">
-                  {{ t('about.stableChannel') }}
-                </SelectItem>
-                <SelectItem value="beta">
-                  {{ t('about.betaChannel') }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+        <!-- Local update: selected file display -->
+        <div
+          v-if="upgrade.selectedLocalZip"
+          class="mt-2 w-full max-w-xl rounded-xl border border-border/80 bg-card/70 p-4 shadow-sm"
+        >
+          <div class="flex items-center gap-2 text-sm">
+            <Icon icon="lucide:file-archive" class="h-4 w-4 text-muted-foreground" />
+            <span class="truncate text-muted-foreground">{{ selectedFileName }}</span>
+          </div>
+          <div class="mt-3 flex justify-center">
+            <Button size="sm" class="text-xs" @click="showRestartConfirm = true">
+              {{ t('about.confirmUpdate') }}
+            </Button>
           </div>
         </div>
 
+        <!-- Remote update: version info -->
         <div
           v-if="upgrade.shouldShowUpdateNotes"
           class="mt-2 w-full max-w-xl rounded-xl border border-border/80 bg-card/70 p-4 shadow-sm"
@@ -110,24 +108,41 @@
             {{ t('about.disclaimerButton') }}
           </Button>
 
-          <Button
-            v-if="showMockUpdateControls && !upgrade.isMockUpdate"
-            variant="outline"
-            size="sm"
-            class="mb-2 text-xs"
-            @click="handleMockDownloadedUpdate"
-          >
-            {{ t('about.mockUpdateButton') }}
+          <Button variant="outline" size="sm" class="mb-2 text-xs" @click="handleLocalUpdate">
+            <Icon icon="lucide:folder-open" class="mr-1 h-3 w-3" />
+            {{ t('about.localUpdateButton') }}
           </Button>
 
           <Button
-            v-if="showMockUpdateControls && upgrade.isMockUpdate"
             variant="outline"
             size="sm"
             class="mb-2 text-xs"
-            @click="handleClearMockUpdate"
+            :disabled="upgrade.isChecking || upgrade.isDownloading || upgrade.isRestarting"
+            @click="handleRemoteUpdate"
           >
-            {{ t('about.clearMockUpdateButton') }}
+            <Icon
+              icon="lucide:cloud-download"
+              class="mr-1 h-3 w-3"
+              :class="{ 'animate-spin': upgrade.isChecking }"
+            />
+            <span v-if="upgrade.isDownloading">
+              <template v-if="upgrade.updateProgress">
+                {{ t('update.downloading') }}: {{ Math.round(upgrade.updateProgress.percent) }}%
+              </template>
+              <template v-else>{{ t('update.downloading') }}</template>
+            </span>
+            <span v-else-if="upgrade.isReadyToInstall">
+              {{ upgrade.isRestarting ? t('update.restarting') : t('update.installNow') }}
+            </span>
+            <span v-else-if="upgrade.updateState === 'available'">
+              {{ t('update.installUpdate') }}
+            </span>
+            <span v-else-if="upgrade.isChecking">
+              {{ t('settings.about.checking') }}
+            </span>
+            <span v-else>
+              {{ t('about.remoteUpdateButton') }}
+            </span>
           </Button>
 
           <Button
@@ -148,41 +163,6 @@
             @click="handleManualDownload('official')"
           >
             {{ t('update.officialDownload') }}
-          </Button>
-
-          <Button
-            v-if="!upgrade.showManualDownloadOptions"
-            variant="outline"
-            size="sm"
-            class="mb-2 text-xs"
-            :disabled="upgrade.isChecking || upgrade.isDownloading || upgrade.isRestarting"
-            @click="handlePrimaryAction"
-          >
-            <Icon
-              icon="lucide:refresh-cw"
-              class="mr-1 h-3 w-3"
-              :class="{
-                'animate-spin': upgrade.isChecking || upgrade.isDownloading
-              }"
-            />
-            <span v-if="upgrade.isDownloading">
-              <template v-if="upgrade.updateProgress">
-                {{ t('update.downloading') }}: {{ Math.round(upgrade.updateProgress.percent) }}%
-              </template>
-              <template v-else>{{ t('update.downloading') }}</template>
-            </span>
-            <span v-else-if="upgrade.isReadyToInstall">
-              {{ upgrade.isRestarting ? t('update.restarting') : t('update.installNow') }}
-            </span>
-            <span v-else-if="upgrade.updateState === 'available'">
-              {{ t('update.installUpdate') }}
-            </span>
-            <span v-else-if="upgrade.isChecking">
-              {{ t('settings.about.checking') }}
-            </span>
-            <span v-else>
-              {{ t('about.checkUpdateButton') }}
-            </span>
           </Button>
         </div>
       </div>
@@ -206,11 +186,30 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+
+  <Dialog :open="showRestartConfirm" @update:open="showRestartConfirm = $event">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{ t('about.restartConfirmTitle') }}</DialogTitle>
+        <DialogDescription>
+          {{ t('about.restartConfirmDesc') }}
+        </DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <Button variant="outline" @click="showRestartConfirm = false">
+          {{ t('common.cancel') }}
+        </Button>
+        <Button @click="confirmLocalUpdate">
+          {{ t('about.confirmUpdate') }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import { usePresenter } from '@/composables/usePresenter'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Button } from '@shadcn/components/ui/button'
 import { Icon } from '@iconify/vue'
@@ -222,20 +221,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@shadcn/components/ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@shadcn/components/ui/select'
 import NodeRenderer from 'markstream-vue'
 import { useUpgradeStore } from '@/stores/upgrade'
 import { useLanguageStore } from '@/stores/language'
-import type { AcceptableValue } from 'reka-ui'
 import { useThemeStore } from '@/stores/theme'
 import { useToast } from '@/components/use-toast'
-import { SETTINGS_EVENTS } from '@/events'
 import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
@@ -244,12 +234,10 @@ const themeStore = useThemeStore()
 const languageStore = useLanguageStore()
 const route = useRoute()
 const devicePresenter = usePresenter('devicePresenter')
-const configPresenter = usePresenter('configPresenter')
 const appVersion = ref('')
 const upgrade = useUpgradeStore()
-const updateChannel = ref('stable')
 const isDisclaimerOpen = ref(false)
-const showMockUpdateControls = computed(() => import.meta.env.DEV)
+const showRestartConfirm = ref(false)
 
 const formattedUpdateVersion = computed(() => {
   const version = upgrade.updateInfo?.version ?? ''
@@ -257,15 +245,13 @@ const formattedUpdateVersion = computed(() => {
   return version.startsWith('v') ? version : `v${version}`
 })
 
+const selectedFileName = computed(() => {
+  if (!upgrade.selectedLocalZip) return ''
+  return upgrade.selectedLocalZip.split('/').pop() || upgrade.selectedLocalZip
+})
+
 const openDisclaimerDialog = () => {
   isDisclaimerOpen.value = true
-}
-
-const showUpToDateToast = () => {
-  toast({
-    title: t('update.alreadyUpToDate'),
-    description: t('update.alreadyUpToDateDesc')
-  })
 }
 
 const showUpdateErrorToast = (message: string) => {
@@ -276,15 +262,16 @@ const showUpdateErrorToast = (message: string) => {
   })
 }
 
-const setUpdateChannel = async (channel: AcceptableValue) => {
-  try {
-    await configPresenter.setUpdateChannel(channel as string)
-  } catch (error) {
-    console.error('updateChannelSetError:', error)
-  }
+const handleLocalUpdate = async () => {
+  await upgrade.selectLocalZip()
 }
 
-const handlePrimaryAction = async () => {
+const confirmLocalUpdate = async () => {
+  showRestartConfirm.value = false
+  await upgrade.applyLocalZip()
+}
+
+const handleRemoteUpdate = async () => {
   if (upgrade.isChecking || upgrade.isDownloading || upgrade.isRestarting) {
     return
   }
@@ -296,7 +283,10 @@ const handlePrimaryAction = async () => {
 
   const status = await upgrade.checkUpdate(false)
   if (status === 'not-available') {
-    showUpToDateToast()
+    toast({
+      title: t('update.alreadyUpToDate'),
+      description: t('update.alreadyUpToDateDesc')
+    })
   } else if (status === 'error' && upgrade.updateError) {
     showUpdateErrorToast(upgrade.updateError)
   }
@@ -304,32 +294,6 @@ const handlePrimaryAction = async () => {
 
 const handleManualDownload = async (type: 'github' | 'official') => {
   await upgrade.handleUpdate(type)
-}
-
-const handleMockDownloadedUpdate = async () => {
-  const status = await upgrade.mockDownloadedUpdate()
-  if (status === 'error' && upgrade.updateError) {
-    showUpdateErrorToast(upgrade.updateError)
-  }
-}
-
-const handleClearMockUpdate = async () => {
-  const status = await upgrade.clearMockUpdate()
-  if (status === 'error' && upgrade.updateError) {
-    showUpdateErrorToast(upgrade.updateError)
-  }
-}
-
-const handleExternalCheckUpdate = async () => {
-  if (upgrade.isChecking || upgrade.isDownloading || upgrade.isRestarting) {
-    return
-  }
-
-  if (upgrade.updateState === 'available' || upgrade.isReadyToInstall) {
-    return
-  }
-
-  await handlePrimaryAction()
 }
 
 const syncUpdateStatus = async () => {
@@ -345,9 +309,7 @@ const openExternalLink = (url: string) => {
 }
 
 onMounted(async () => {
-  window.electron?.ipcRenderer?.on(SETTINGS_EVENTS.CHECK_FOR_UPDATES, handleExternalCheckUpdate)
   appVersion.value = await devicePresenter.getAppVersion()
-  updateChannel.value = await configPresenter.getUpdateChannel()
   await syncUpdateStatus()
 })
 
@@ -359,11 +321,4 @@ watch(
     }
   }
 )
-
-onBeforeUnmount(() => {
-  window.electron?.ipcRenderer?.removeListener(
-    SETTINGS_EVENTS.CHECK_FOR_UPDATES,
-    handleExternalCheckUpdate
-  )
-})
 </script>

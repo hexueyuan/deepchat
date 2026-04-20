@@ -162,6 +162,19 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: '--max-old-space-size=4096'
 
+      - name: Ad-hoc codesign and repackage
+        run: |
+          codesign --force --deep --sign - dist/mac-arm64/DeepChat.app
+          codesign -v dist/mac-arm64/DeepChat.app
+          VERSION=$(node -p "require('./package.json').version")
+          ZIP_NAME="deepchat-${VERSION}-mac-arm64.zip"
+          rm -f "dist/${ZIP_NAME}"
+          cd dist/mac-arm64 && ditto -c -k --sequesterRsrc --keepParent DeepChat.app "../${ZIP_NAME}" && cd ../..
+          NEW_SHA=$(shasum -a 512 "dist/${ZIP_NAME}" | awk '{print $1}' | xxd -r -p | base64)
+          NEW_SIZE=$(stat -f%z "dist/${ZIP_NAME}")
+          sed -i '' "s|sha512: .*|sha512: ${NEW_SHA}|g" dist/latest-mac.yml
+          sed -i '' "s|size: .*|size: ${NEW_SIZE}|g" dist/latest-mac.yml
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:

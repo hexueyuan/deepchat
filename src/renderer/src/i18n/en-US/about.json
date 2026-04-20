@@ -16,6 +16,11 @@
   "checkUpdateButton": "Check for Updates",
   "mockUpdateButton": "Mock Downloaded Update",
   "clearMockUpdateButton": "Clear Mock Update",
+  "localUpdateButton": "Local Update",
+  "remoteUpdateButton": "Remote Update",
+  "confirmUpdate": "Confirm Update",
+  "restartConfirmTitle": "Update Confirmation",
+  "restartConfirmDesc": "The app will restart to complete the update. Please save all work.",
   "updateChannel": "Update Channel",
   "stableChannel": "Stable",
   "betaChannel": "Beta"
