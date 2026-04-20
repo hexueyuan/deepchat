@@ -15,7 +15,7 @@ import path from 'path'
 
 const { autoUpdater } = electronUpdater
 
-const GITHUB_OWNER = 'ThinkInAIXYZ'
+const GITHUB_OWNER = 'hexueyuan'
 const GITHUB_REPO = 'deepchat'
 const OFFICIAL_DOWNLOAD_URL = 'https://deepchatai.cn/#/download'
 const UPDATE_CHANNEL_STABLE = 'stable'

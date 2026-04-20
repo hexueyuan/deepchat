@@ -1,0 +1,3 @@
+[submodule ".claude/plugins/devpipe"]
+	path = .claude/plugins/devpipe
+	url = https://github.com/hexueyuan/devpipe

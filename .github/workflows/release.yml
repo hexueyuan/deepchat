@@ -106,9 +106,9 @@ jobs:
         env:
           RELEASE_SHA: ${{ needs.resolve-tag.outputs.sha }}
         run: |
-          git fetch origin main --prune
-          if ! git merge-base --is-ancestor "${RELEASE_SHA}" origin/main; then
-            echo "Release tags must point to commits already reachable from origin/main." >&2
+          git fetch origin dev --prune
+          if ! git merge-base --is-ancestor "${RELEASE_SHA}" origin/dev; then
+            echo "Release tags must point to commits already reachable from origin/dev." >&2
             exit 1
           fi
 
@@ -296,12 +296,7 @@ jobs:
           pnpm run build
           pnpm exec electron-builder --mac --${{ matrix.arch }} --publish=never
         env:
-          CSC_LINK: ${{ secrets.DEEPCHAT_CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.DEEPCHAT_CSC_KEY_PASS }}
-          DEEPCHAT_APPLE_NOTARY_USERNAME: ${{ secrets.DEEPCHAT_APPLE_NOTARY_USERNAME }}
-          DEEPCHAT_APPLE_NOTARY_TEAM_ID: ${{ secrets.DEEPCHAT_APPLE_NOTARY_TEAM_ID }}
-          DEEPCHAT_APPLE_NOTARY_PASSWORD: ${{ secrets.DEEPCHAT_APPLE_NOTARY_PASSWORD }}
-          build_for_release: '2'
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VITE_GITHUB_CLIENT_ID: ${{ secrets.DC_GITHUB_CLIENT_ID }}
           VITE_GITHUB_CLIENT_SECRET: ${{ secrets.DC_GITHUB_CLIENT_SECRET }}
@@ -456,7 +451,7 @@ jobs:
         with:
           tag_name: ${{ needs.resolve-tag.outputs.tag }}
           name: DeepChat V${{ steps.get_version.outputs.version }}
-          draft: true
+          draft: false
           prerelease: ${{ steps.get_version.outputs.prerelease == 'true' }}
           files: |
             release_assets/*
