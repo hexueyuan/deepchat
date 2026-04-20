@@ -232,18 +232,20 @@ jobs:
         run: |
           mkdir -p release_assets
 
-          echo "=== Artifact directory structure ==="
-          ls -laR artifacts/ || echo "No artifacts directory"
-
+          # download-artifact@v8 may place files directly in artifacts/ or in a subdirectory
+          ARTIFACT_DIR="artifacts"
           if [ -d "artifacts/deepchat-mac-arm64" ]; then
-            cp artifacts/deepchat-mac-arm64/*.dmg release_assets/ 2>/dev/null || true
-            cp artifacts/deepchat-mac-arm64/*.zip release_assets/ 2>/dev/null || true
-            cp artifacts/deepchat-mac-arm64/*.blockmap release_assets/ 2>/dev/null || true
-            cp artifacts/deepchat-mac-arm64/*.yml release_assets/ 2>/dev/null || true
+            ARTIFACT_DIR="artifacts/deepchat-mac-arm64"
           fi
+
+          cp "$ARTIFACT_DIR"/*.dmg release_assets/ 2>/dev/null || true
+          cp "$ARTIFACT_DIR"/*.zip release_assets/ 2>/dev/null || true
+          cp "$ARTIFACT_DIR"/*.blockmap release_assets/ 2>/dev/null || true
+          cp "$ARTIFACT_DIR"/*.yml release_assets/ 2>/dev/null || true
 
           if [ -z "$(ls -A release_assets)" ]; then
             echo "Error: No release assets found"
+            ls -laR artifacts/
             exit 1
           fi
 
