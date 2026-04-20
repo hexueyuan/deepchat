@@ -45,6 +45,11 @@ export interface SessionGroup {
   sessions: UISession[]
 }
 
+export interface ProjectGroupMetadata {
+  isPinned?: boolean
+  customName?: string
+}
+
 export type GroupMode = 'time' | 'project'
 export type StartNewConversationOptions = {
   refresh?: boolean
@@ -54,6 +59,7 @@ export type CloseSessionOptions = {
 }
 
 const SIDEBAR_GROUP_MODE_KEY = 'sidebar_group_mode'
+const PROJECT_GROUP_METADATA_KEY = 'project_group_metadata'
 const DEFAULT_GROUP_MODE: GroupMode = 'project'
 
 // --- Helper Functions ---
@@ -204,6 +210,7 @@ export const useSessionStore = defineStore('session', () => {
   const sessions = ref<UISession[]>([])
   const activeSessionId = ref<string | null>(null)
   const groupMode = ref<GroupMode>(DEFAULT_GROUP_MODE)
+  const projectGroupMetadata = ref<Record<string, ProjectGroupMetadata>>({})
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -248,6 +255,56 @@ export const useSessionStore = defineStore('session', () => {
     }
 
     await groupModeLoadPromise
+  }
+
+  const loadProjectGroupMetadata = async (): Promise<void> => {
+    try {
+      const saved = await configPresenter.getSetting<Record<string, ProjectGroupMetadata>>(
+        PROJECT_GROUP_METADATA_KEY
+      )
+      projectGroupMetadata.value = saved ?? {}
+    } catch (e) {
+      console.warn('[sessionStore] Failed to load project group metadata:', e)
+      projectGroupMetadata.value = {}
+    }
+  }
+
+  const saveProjectGroupMetadata = async (): Promise<void> => {
+    try {
+      await configPresenter.setSetting(PROJECT_GROUP_METADATA_KEY, projectGroupMetadata.value)
+    } catch (e) {
+      console.warn('[sessionStore] Failed to save project group metadata:', e)
+    }
+  }
+
+  async function toggleProjectGroupPinned(groupId: string, pinned: boolean): Promise<void> {
+    const current = projectGroupMetadata.value[groupId] ?? {}
+    projectGroupMetadata.value = {
+      ...projectGroupMetadata.value,
+      [groupId]: { ...current, isPinned: pinned }
+    }
+    await saveProjectGroupMetadata()
+  }
+
+  async function renameProjectGroup(groupId: string, customName: string | null): Promise<void> {
+    const current = projectGroupMetadata.value[groupId] ?? {}
+    if (!customName || customName.trim() === '') {
+      const { customName: _, ...rest } = current
+      projectGroupMetadata.value = {
+        ...projectGroupMetadata.value,
+        [groupId]: rest
+      }
+    } else {
+      projectGroupMetadata.value = {
+        ...projectGroupMetadata.value,
+        [groupId]: { ...current, customName: customName.trim() }
+      }
+    }
+    await saveProjectGroupMetadata()
+  }
+
+  function getProjectGroupMeta(groupId: string): ProjectGroupMetadata {
+    return projectGroupMetadata.value[groupId] ?? {}
   }
 
   // --- Getters ---
@@ -562,8 +619,24 @@ export const useSessionStore = defineStore('session', () => {
     const visibleSessions = sessions.value.filter(
       (session) => isRegularSession(session) && !session.isDraft && !session.isPinned
     )
-    const grouped =
+    let grouped =
       groupMode.value === 'time' ? groupByTime(visibleSessions) : groupByProject(visibleSessions)
+
+    // Apply custom names and sort pinned groups first in project mode
+    if (groupMode.value === 'project') {
+      grouped = grouped.map((group) => {
+        const meta = projectGroupMetadata.value[group.id]
+        if (meta?.customName) {
+          return { ...group, label: meta.customName, labelKey: undefined }
+        }
+        return group
+      })
+      grouped.sort((a, b) => {
+        const aPinned = projectGroupMetadata.value[a.id]?.isPinned ? 1 : 0
+        const bPinned = projectGroupMetadata.value[b.id]?.isPinned ? 1 : 0
+        return bPinned - aPinned
+      })
+    }
 
     if (agentId === null) return grouped
 
@@ -603,6 +676,7 @@ export const useSessionStore = defineStore('session', () => {
   })
   registerStoreCleanup(cleanupIpcBindings)
   void ensureGroupModeLoaded()
+  void loadProjectGroupMetadata()
 
   return {
     sessions,
@@ -630,6 +704,10 @@ export const useSessionStore = defineStore('session', () => {
     setSessionProjectDir,
     toggleGroupMode,
     getPinnedSessions,
-    getFilteredGroups
+    getFilteredGroups,
+    projectGroupMetadata,
+    toggleProjectGroupPinned,
+    renameProjectGroup,
+    getProjectGroupMeta
   }
 })

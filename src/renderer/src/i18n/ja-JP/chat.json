@@ -299,7 +299,15 @@
     "searchPlaceholder": "チャットタイトルを検索",
     "searchAriaLabel": "チャットタイトルを検索",
     "searchEmptyTitle": "一致する会話はありません",
-    "searchEmptyDescription": "別のキーワードを試してください"
+    "searchEmptyDescription": "別のキーワードを試してください",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "タスク概要",

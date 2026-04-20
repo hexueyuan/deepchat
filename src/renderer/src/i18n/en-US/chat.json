@@ -315,7 +315,15 @@
     "searchPlaceholder": "Search chats",
     "searchAriaLabel": "Search chats",
     "searchEmptyTitle": "No matching conversations",
-    "searchEmptyDescription": "Try a different title keyword"
+    "searchEmptyDescription": "Try a different title keyword",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "spotlight": {
     "placeholder": "Search chats, agents, settings, actions…",

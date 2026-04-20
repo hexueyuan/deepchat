@@ -299,7 +299,15 @@
     "searchPlaceholder": "Søg i chats",
     "searchAriaLabel": "Søg i chats",
     "searchEmptyTitle": "Ingen matchende samtaler",
-    "searchEmptyDescription": "Prøv et andet nøgleord i titlen"
+    "searchEmptyDescription": "Prøv et andet nøgleord i titlen",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "Opgaveoversigt",

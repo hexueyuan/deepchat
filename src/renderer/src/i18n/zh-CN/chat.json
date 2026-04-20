@@ -315,7 +315,15 @@
     "searchPlaceholder": "搜索会话标题",
     "searchAriaLabel": "搜索会话标题",
     "searchEmptyTitle": "没有找到匹配的会话",
-    "searchEmptyDescription": "试试换一个标题关键词"
+    "searchEmptyDescription": "试试换一个标题关键词",
+    "projectGroup": {
+      "pin": "置顶",
+      "unpin": "取消置顶",
+      "rename": "重命名",
+      "renameTitle": "重命名项目分组",
+      "renameDescription": "输入自定义名称，留空恢复默认名称。",
+      "renamePlaceholder": "输入分组名称"
+    }
   },
   "spotlight": {
     "placeholder": "搜索会话、Agent、设置与动作…",

@@ -299,7 +299,15 @@
     "searchPlaceholder": "搜尋會話標題",
     "searchAriaLabel": "搜尋會話標題",
     "searchEmptyTitle": "找不到相符的會話",
-    "searchEmptyDescription": "試試其他標題關鍵字"
+    "searchEmptyDescription": "試試其他標題關鍵字",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "任務總覽",

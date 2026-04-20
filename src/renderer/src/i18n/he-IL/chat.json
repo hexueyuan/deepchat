@@ -299,7 +299,15 @@
     "searchPlaceholder": "חיפוש בצ׳אטים",
     "searchAriaLabel": "חיפוש בצ׳אטים",
     "searchEmptyTitle": "לא נמצאו שיחות תואמות",
-    "searchEmptyDescription": "נסו מילת מפתח אחרת בכותרת"
+    "searchEmptyDescription": "נסו מילת מפתח אחרת בכותרת",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "סקירת משימות",

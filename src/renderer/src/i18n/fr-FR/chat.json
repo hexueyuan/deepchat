@@ -299,7 +299,15 @@
     "searchPlaceholder": "Rechercher des chats",
     "searchAriaLabel": "Rechercher des chats",
     "searchEmptyTitle": "Aucune conversation correspondante",
-    "searchEmptyDescription": "Essayez un autre mot-clé de titre"
+    "searchEmptyDescription": "Essayez un autre mot-clé de titre",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "Aperçu des tâches",

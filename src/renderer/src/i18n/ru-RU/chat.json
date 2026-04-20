@@ -299,7 +299,15 @@
     "searchPlaceholder": "Поиск по чатам",
     "searchAriaLabel": "Поиск по чатам",
     "searchEmptyTitle": "Совпадений не найдено",
-    "searchEmptyDescription": "Попробуйте другое ключевое слово в названии"
+    "searchEmptyDescription": "Попробуйте другое ключевое слово в названии",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "Обзор задач",

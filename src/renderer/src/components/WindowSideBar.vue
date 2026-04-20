@@ -252,23 +252,53 @@
           </div>
 
           <template v-for="group in filteredGroups" :key="getGroupIdentifier(group)">
-            <button
-              type="button"
-              class="mt-2 flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs font-medium text-muted-foreground transition-colors duration-150 hover:bg-accent/40 hover:text-foreground"
-              :data-group-id="getGroupIdentifier(group)"
-              :aria-expanded="!isGroupCollapsed(group)"
-              @click="toggleGroup(group)"
-            >
-              <span class="shrink-0 size-6 flex items-center justify-center">
-                <Icon
-                  :icon="isGroupCollapsed(group) ? 'lucide:folder-closed' : 'lucide:folder-open'"
-                  class="size-4"
-                />
-              </span>
-              <span class="truncate">
-                {{ getGroupLabel(group) }}
-              </span>
-            </button>
+            <ContextMenu>
+              <ContextMenuTrigger as-child>
+                <button
+                  type="button"
+                  class="mt-2 flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs font-medium text-muted-foreground transition-colors duration-150 hover:bg-accent/40 hover:text-foreground"
+                  :data-group-id="getGroupIdentifier(group)"
+                  :aria-expanded="!isGroupCollapsed(group)"
+                  @click="toggleGroup(group)"
+                >
+                  <span class="shrink-0 size-6 flex items-center justify-center">
+                    <Icon
+                      v-if="isGroupPinned(group)"
+                      icon="lucide:pin"
+                      class="size-3.5 text-primary"
+                    />
+                    <Icon
+                      v-else
+                      :icon="
+                        isGroupCollapsed(group) ? 'lucide:folder-closed' : 'lucide:folder-open'
+                      "
+                      class="size-4"
+                    />
+                  </span>
+                  <span class="truncate">
+                    {{ getGroupLabel(group) }}
+                  </span>
+                </button>
+              </ContextMenuTrigger>
+              <ContextMenuContent v-if="sessionStore.groupMode === 'project'" class="w-48">
+                <ContextMenuItem @select="handleToggleGroupPin(group)">
+                  <Icon
+                    :icon="isGroupPinned(group) ? 'lucide:pin-off' : 'lucide:pin'"
+                    class="mr-2 h-4 w-4"
+                  />
+                  {{
+                    isGroupPinned(group)
+                      ? t('chat.sidebar.projectGroup.unpin')
+                      : t('chat.sidebar.projectGroup.pin')
+                  }}
+                </ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuItem @select="openRenameGroupDialog(group)">
+                  <Icon icon="lucide:pencil" class="mr-2 h-4 w-4" />
+                  {{ t('chat.sidebar.projectGroup.rename') }}
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
             <Transition name="sidebar-group-collapse">
               <div v-if="!isGroupCollapsed(group)" class="space-y-0.5">
                 <WindowSideBarSessionItem
@@ -309,6 +339,30 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+
+  <Dialog v-model:open="renameGroupDialogOpen">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{ t('chat.sidebar.projectGroup.renameTitle') }}</DialogTitle>
+        <DialogDescription>{{
+          t('chat.sidebar.projectGroup.renameDescription')
+        }}</DialogDescription>
+      </DialogHeader>
+      <div class="py-4">
+        <Input
+          v-model="renameGroupInputValue"
+          :placeholder="t('chat.sidebar.projectGroup.renamePlaceholder')"
+          @keydown.enter="handleRenameGroupConfirm"
+        />
+      </div>
+      <DialogFooter>
+        <Button variant="outline" @click="renameGroupDialogOpen = false">{{
+          t('dialog.cancel')
+        }}</Button>
+        <Button @click="handleRenameGroupConfirm">{{ t('common.save') }}</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -330,6 +384,13 @@ import {
   DialogHeader,
   DialogTitle
 } from '@shadcn/components/ui/dialog'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger
+} from '@shadcn/components/ui/context-menu'
 import { usePresenter, useRemoteControlPresenter } from '@/composables/usePresenter'
 import { SETTINGS_EVENTS } from '@/events'
 import { useAgentStore } from '@/stores/ui/agent'
@@ -558,6 +619,9 @@ const pinFeedbackSessionId = ref<string | null>(null)
 const pinFeedbackMode = ref<PinFeedbackMode | null>(null)
 const sessionListRef = ref<HTMLElement | null>(null)
 const deleteTargetSession = ref<UISession | null>(null)
+const renameGroupDialogOpen = ref(false)
+const renameTargetGroupId = ref<string | null>(null)
+const renameGroupInputValue = ref('')
 
 const deleteDialogOpen = computed({
   get: () => deleteTargetSession.value !== null,
@@ -571,6 +635,27 @@ const deleteDialogOpen = computed({
 const getGroupIdentifier = (group: SessionGroup) => group.id
 
 const getGroupLabel = (group: SessionGroup) => (group.labelKey ? t(group.labelKey) : group.label)
+
+const isGroupPinned = (group: SessionGroup) =>
+  sessionStore.getProjectGroupMeta(group.id)?.isPinned ?? false
+
+const handleToggleGroupPin = async (group: SessionGroup) => {
+  await sessionStore.toggleProjectGroupPinned(group.id, !isGroupPinned(group))
+}
+
+const openRenameGroupDialog = (group: SessionGroup) => {
+  renameTargetGroupId.value = group.id
+  renameGroupInputValue.value = getGroupLabel(group)
+  renameGroupDialogOpen.value = true
+}
+
+const handleRenameGroupConfirm = async () => {
+  if (!renameTargetGroupId.value) return
+  await sessionStore.renameProjectGroup(renameTargetGroupId.value, renameGroupInputValue.value)
+  renameGroupDialogOpen.value = false
+  renameTargetGroupId.value = null
+  renameGroupInputValue.value = ''
+}
 
 const isGroupCollapsed = (group: SessionGroup) =>
   collapsedGroupIds.value.has(getGroupIdentifier(group))

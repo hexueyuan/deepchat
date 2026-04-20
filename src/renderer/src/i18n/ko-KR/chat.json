@@ -299,7 +299,15 @@
     "searchPlaceholder": "채팅 제목 검색",
     "searchAriaLabel": "채팅 제목 검색",
     "searchEmptyTitle": "일치하는 대화가 없습니다",
-    "searchEmptyDescription": "다른 제목 키워드를 시도해 보세요"
+    "searchEmptyDescription": "다른 제목 키워드를 시도해 보세요",
+    "projectGroup": {
+      "pin": "Pin to Top",
+      "unpin": "Unpin",
+      "rename": "Rename",
+      "renameTitle": "Rename Project Group",
+      "renameDescription": "Enter a custom name. Leave empty to use the default folder name.",
+      "renamePlaceholder": "Enter group name"
+    }
   },
   "floatingWidget": {
     "title": "작업 개요",
