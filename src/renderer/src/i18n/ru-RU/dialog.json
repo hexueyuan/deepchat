@@ -40,5 +40,9 @@
       "functionCall": "Внимание: Включение вызовов функций автоматически отключит рассуждения, что является требованием моделей DeepSeek-V3.1."
     },
     "confirmEnable": "Подтвердить включение"
+  },
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
   }
 }

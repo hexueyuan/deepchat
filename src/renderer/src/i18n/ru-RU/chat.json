@@ -138,7 +138,11 @@
   "topbar": {
     "share": "Поделиться",
     "more": "Ещё",
-    "backToParent": "Вернуться к родительской сессии"
+    "backToParent": "Вернуться к родительской сессии",
+    "temporaryBadge": "Temporary",
+    "persistSession": "Persist Session",
+    "persistSuccess": "Session persisted",
+    "newTemporarySession": "New Temporary Session"
   },
   "advancedSettings": {
     "button": "Расширенные",
@@ -298,6 +302,8 @@
     "remoteControlDisabled": "Отключено",
     "searchPlaceholder": "Поиск по чатам",
     "searchAriaLabel": "Поиск по чатам",
+    "newSession": "New Session",
+    "newTemporarySession": "New Temporary Session",
     "searchEmptyTitle": "Совпадений не найдено",
     "searchEmptyDescription": "Попробуйте другое ключевое слово в названии",
     "projectGroup": {

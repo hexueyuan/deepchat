@@ -40,5 +40,9 @@
       "functionCall": "توجه: فعال‌سازی فراخوانی تابع به طور خودکار قابلیت استدلال را غیرفعال می‌کند، که این الزام مدل‌های DeepSeek-V3.1 است."
     },
     "confirmEnable": "تأیید فعال‌سازی"
+  },
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
   }
 }

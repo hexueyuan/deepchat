@@ -316,6 +316,7 @@ export class AgentSessionPresenter {
     const title = normalizedInput.text.slice(0, 50) || 'New Chat'
     const sessionId = this.sessionManager.create(agentId, title, projectDir, {
       isDraft: false,
+      isTemporary: input.isTemporary,
       disabledAgentTools,
       subagentEnabled
     })
@@ -1392,6 +1393,24 @@ export class AgentSessionPresenter {
   async deleteSession(sessionId: string): Promise<void> {
     await this.deleteSessionInternal(sessionId)
     this.emitSessionListUpdated()
+  }
+
+  async persistTemporarySession(sessionId: string): Promise<SessionWithState> {
+    this.sessionManager.update(sessionId, { isTemporary: false })
+    this.emitSessionListUpdated()
+    const session = await this.getSession(sessionId)
+    if (!session) throw new Error(`Session not found: ${sessionId}`)
+    return session
+  }
+
+  async deleteAllTemporarySessions(): Promise<void> {
+    const ids = this.sessionManager.listTemporaryIds()
+    for (const id of ids) {
+      await this.deleteSessionInternal(id)
+    }
+    if (ids.length > 0) {
+      this.emitSessionListUpdated()
+    }
   }
 
   async cancelGeneration(sessionId: string): Promise<void> {

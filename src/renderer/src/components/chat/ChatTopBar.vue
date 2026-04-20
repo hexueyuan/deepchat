@@ -22,9 +22,35 @@
         <Icon icon="lucide:chevron-right" class="w-3 h-3 shrink-0" />
       </div>
       <h2 class="text-sm font-medium truncate">{{ title }}</h2>
+      <span
+        v-if="isTemporary"
+        class="shrink-0 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-500"
+      >
+        {{ t('chat.topbar.temporaryBadge') }}
+      </span>
     </div>
 
     <div class="flex items-center gap-1 no-drag">
+      <template v-if="isTemporary">
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-7 w-7 text-muted-foreground hover:text-foreground"
+          :title="t('chat.topbar.persistSession')"
+          @click="handlePersistTemporary"
+        >
+          <Icon icon="lucide:save" class="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-7 w-7 text-muted-foreground hover:text-foreground"
+          :title="t('chat.topbar.newTemporarySession')"
+          @click="replaceTemporaryDialogOpen = true"
+        >
+          <Icon icon="lucide:plus" class="w-4 h-4" />
+        </Button>
+      </template>
       <Button
         variant="ghost"
         size="icon"
@@ -149,6 +175,23 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+
+  <Dialog v-model:open="replaceTemporaryDialogOpen">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{ t('dialog.replaceTemporarySession.title') }}</DialogTitle>
+        <DialogDescription>{{ t('dialog.replaceTemporarySession.description') }}</DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <Button variant="outline" @click="replaceTemporaryDialogOpen = false">{{
+          t('dialog.cancel')
+        }}</Button>
+        <Button variant="destructive" @click="handleReplaceTemporaryConfirm">{{
+          t('dialog.confirm')
+        }}</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -186,6 +229,7 @@ const props = defineProps<{
   title: string
   project: string
   isReadOnly?: boolean
+  isTemporary?: boolean
 }>()
 
 const attrs = useAttrs()
@@ -198,6 +242,7 @@ const { toast } = useToast()
 const renameDialogOpen = ref(false)
 const clearDialogOpen = ref(false)
 const deleteDialogOpen = ref(false)
+const replaceTemporaryDialogOpen = ref(false)
 const renameValue = ref('')
 
 const projectName = computed(() => props.project.split('/').pop() ?? props.project)
@@ -281,6 +326,27 @@ const handleDeleteConfirm = async () => {
   }
 
   deleteDialogOpen.value = false
+}
+
+const handlePersistTemporary = async () => {
+  try {
+    await sessionStore.persistTemporarySession(props.sessionId)
+    toast({
+      title: t('chat.topbar.persistSuccess'),
+      variant: 'default'
+    })
+  } catch (error) {
+    console.error('Failed to persist temporary session:', error)
+  }
+}
+
+const handleReplaceTemporaryConfirm = async () => {
+  try {
+    await sessionStore.replaceTemporarySession(props.sessionId)
+  } catch (error) {
+    console.error('Failed to replace temporary session:', error)
+  }
+  replaceTemporaryDialogOpen.value = false
 }
 
 const handleExport = async (format: 'markdown' | 'html' | 'txt' | 'nowledge-mem') => {

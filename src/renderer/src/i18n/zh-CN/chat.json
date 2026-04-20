@@ -142,7 +142,11 @@
   "topbar": {
     "backToParent": "返回父会话",
     "share": "分享",
-    "more": "更多"
+    "more": "更多",
+    "temporaryBadge": "临时",
+    "persistSession": "持久化会话",
+    "persistSuccess": "会话已持久化",
+    "newTemporarySession": "新建临时会话"
   },
   "subagents": {
     "label": "subagent"
@@ -314,6 +318,8 @@
     "emptyDescription": "开始一个新会话吧",
     "searchPlaceholder": "搜索会话标题",
     "searchAriaLabel": "搜索会话标题",
+    "newSession": "新建会话",
+    "newTemporarySession": "新建临时会话",
     "searchEmptyTitle": "没有找到匹配的会话",
     "searchEmptyDescription": "试试换一个标题关键词",
     "projectGroup": {

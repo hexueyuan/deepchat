@@ -14,6 +14,7 @@ export interface NewSessionRow {
   session_kind: 'regular' | 'subagent'
   parent_session_id: string | null
   subagent_meta_json: string | null
+  is_temporary: number
   created_at: number
   updated_at: number
 }
@@ -61,6 +62,9 @@ export class NewSessionsTable extends BaseTable {
         'subagent_meta_json TEXT'
       )
     }
+    if (version >= 21) {
+      columns.push('is_temporary INTEGER NOT NULL DEFAULT 0')
+    }
 
     columns.push('created_at INTEGER NOT NULL', 'updated_at INTEGER NOT NULL')
 
@@ -91,11 +95,14 @@ export class NewSessionsTable extends BaseTable {
         ALTER TABLE new_sessions ADD COLUMN subagent_meta_json TEXT;
       `
     }
+    if (version === 21) {
+      return `ALTER TABLE new_sessions ADD COLUMN is_temporary INTEGER NOT NULL DEFAULT 0;`
+    }
     return null
   }
 
   getLatestVersion(): number {
-    return 20
+    return 21
   }
 
   create(
@@ -106,6 +113,7 @@ export class NewSessionsTable extends BaseTable {
     options?: {
       isDraft?: boolean
       isPinned?: boolean
+      isTemporary?: boolean
       activeSkills?: string[]
       disabledAgentTools?: string[]
       subagentEnabled?: boolean
@@ -134,9 +142,10 @@ export class NewSessionsTable extends BaseTable {
           session_kind,
           parent_session_id,
           subagent_meta_json,
+          is_temporary,
           created_at,
           updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         id,
@@ -151,6 +160,7 @@ export class NewSessionsTable extends BaseTable {
         options?.sessionKind === 'subagent' ? 'subagent' : 'regular',
         options?.parentSessionId ?? null,
         options?.subagentMetaJson ?? null,
+        options?.isTemporary ? 1 : 0,
         createdAt,
         updatedAt
       )
@@ -205,6 +215,7 @@ export class NewSessionsTable extends BaseTable {
         | 'project_dir'
         | 'is_pinned'
         | 'is_draft'
+        | 'is_temporary'
         | 'active_skills'
         | 'disabled_agent_tools'
         | 'subagent_enabled'
@@ -232,6 +243,10 @@ export class NewSessionsTable extends BaseTable {
     if (fields.is_draft !== undefined) {
       setClauses.push('is_draft = ?')
       params.push(fields.is_draft)
+    }
+    if (fields.is_temporary !== undefined) {
+      setClauses.push('is_temporary = ?')
+      params.push(fields.is_temporary)
     }
     if (fields.active_skills !== undefined) {
       setClauses.push('active_skills = ?')
@@ -269,6 +284,13 @@ export class NewSessionsTable extends BaseTable {
 
   delete(id: string): void {
     this.db.prepare('DELETE FROM new_sessions WHERE id = ?').run(id)
+  }
+
+  listTemporaryIds(): string[] {
+    const rows = this.db.prepare('SELECT id FROM new_sessions WHERE is_temporary = 1').all() as {
+      id: string
+    }[]
+    return rows.map((r) => r.id)
   }
 
   getActiveSkills(id: string): string[] {

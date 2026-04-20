@@ -148,17 +148,26 @@
                   : t('chat.sidebar.groupByProject')
               }}</TooltipContent>
             </Tooltip>
-            <Tooltip>
-              <TooltipTrigger as-child>
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
                 <button
                   class="flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-150"
-                  @click="handleNewChat"
+                  :title="t('common.newChat')"
                 >
                   <Icon icon="lucide:plus" class="w-4 h-4" />
                 </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ t('common.newChat') }}</TooltipContent>
-            </Tooltip>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" class="w-48">
+                <DropdownMenuItem @select="handleNewChat">
+                  <Icon icon="lucide:message-square-plus" class="mr-2 h-4 w-4" />
+                  {{ t('chat.sidebar.newSession') }}
+                </DropdownMenuItem>
+                <DropdownMenuItem @select="handleNewTemporaryChat">
+                  <Icon icon="lucide:clock" class="mr-2 h-4 w-4" />
+                  {{ t('chat.sidebar.newTemporarySession') }}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -256,7 +265,7 @@
               <ContextMenuTrigger as-child>
                 <button
                   type="button"
-                  class="mt-2 flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs font-medium text-muted-foreground transition-colors duration-150 hover:bg-accent/40 hover:text-foreground"
+                  class="mt-2 flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm font-medium text-muted-foreground transition-colors duration-150 hover:bg-accent/40 hover:text-foreground"
                   :data-group-id="getGroupIdentifier(group)"
                   :aria-expanded="!isGroupCollapsed(group)"
                   @click="toggleGroup(group)"
@@ -277,6 +286,9 @@
                   </span>
                   <span class="truncate">
                     {{ getGroupLabel(group) }}
+                  </span>
+                  <span class="ml-auto shrink-0 text-xs tabular-nums opacity-60">
+                    {{ group.sessions.length }}
                   </span>
                 </button>
               </ContextMenuTrigger>
@@ -300,7 +312,7 @@
               </ContextMenuContent>
             </ContextMenu>
             <Transition name="sidebar-group-collapse">
-              <div v-if="!isGroupCollapsed(group)" class="space-y-0.5">
+              <div v-if="!isGroupCollapsed(group)" class="space-y-0.5 pl-4">
                 <WindowSideBarSessionItem
                   v-for="session in group.sessions"
                   :key="session.id"
@@ -391,6 +403,12 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger
 } from '@shadcn/components/ui/context-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@shadcn/components/ui/dropdown-menu'
 import { usePresenter, useRemoteControlPresenter } from '@/composables/usePresenter'
 import { SETTINGS_EVENTS } from '@/events'
 import { useAgentStore } from '@/stores/ui/agent'
@@ -591,6 +609,7 @@ const remoteControlIconClass = computed(() => {
 
 const isPinnedSectionCollapsed = ref(false)
 const collapsedGroupIds = ref<Set<string>>(new Set())
+const knownGroupIds = ref<Set<string>>(new Set())
 const normalizedSessionSearchQuery = computed(() => sessionSearchQuery.value.trim().toLowerCase())
 const matchesSessionSearch = (session: UISession) => {
   if (!normalizedSessionSearchQuery.value) {
@@ -700,6 +719,14 @@ watch(
       [...collapsedGroupIds.value].filter((groupId) => validGroupIds.has(groupId))
     )
 
+    // Collapse new groups by default
+    for (const groupId of validGroupIds) {
+      if (!knownGroupIds.value.has(groupId)) {
+        nextCollapsedGroupIds.add(groupId)
+      }
+    }
+    knownGroupIds.value = validGroupIds
+
     if (activeSessionId) {
       const activeGroup = groups.find((group) =>
         group.sessions.some((session) => session.id === activeSessionId)
@@ -782,6 +809,10 @@ const refreshRemoteControlStatus = async () => {
 
 const handleNewChat = () => {
   void sessionStore.startNewConversation({ refresh: true })
+}
+
+const handleNewTemporaryChat = () => {
+  void sessionStore.startNewTemporaryConversation({ refresh: true })
 }
 
 const handleAgentSelect = async (id: string | null) => {

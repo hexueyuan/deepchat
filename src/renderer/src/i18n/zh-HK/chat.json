@@ -142,7 +142,11 @@
   "topbar": {
     "share": "分享",
     "more": "更多",
-    "backToParent": "返回父會話"
+    "backToParent": "返回父會話",
+    "temporaryBadge": "臨時",
+    "persistSession": "持久化會話",
+    "persistSuccess": "會話已持久化",
+    "newTemporarySession": "新建臨時會話"
   },
   "advancedSettings": {
     "button": "進階設定",
@@ -298,6 +302,8 @@
     "remoteControlDisabled": "未啟用",
     "searchPlaceholder": "搜尋會話標題",
     "searchAriaLabel": "搜尋會話標題",
+    "newSession": "新建會話",
+    "newTemporarySession": "新建臨時會話",
     "searchEmptyTitle": "找不到相符的會話",
     "searchEmptyDescription": "試試其他標題關鍵字",
     "projectGroup": {

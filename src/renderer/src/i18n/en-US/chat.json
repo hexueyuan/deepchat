@@ -142,7 +142,11 @@
   "topbar": {
     "backToParent": "Back to Parent",
     "share": "Share",
-    "more": "More"
+    "more": "More",
+    "temporaryBadge": "Temporary",
+    "persistSession": "Persist Session",
+    "persistSuccess": "Session persisted",
+    "newTemporarySession": "New Temporary Session"
   },
   "subagents": {
     "label": "Subagents"
@@ -314,6 +318,8 @@
     "emptyDescription": "Start a new chat to begin",
     "searchPlaceholder": "Search chats",
     "searchAriaLabel": "Search chats",
+    "newSession": "New Session",
+    "newTemporarySession": "New Temporary Session",
     "searchEmptyTitle": "No matching conversations",
     "searchEmptyDescription": "Try a different title keyword",
     "projectGroup": {

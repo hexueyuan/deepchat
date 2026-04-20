@@ -40,5 +40,9 @@
     "description": "Indtast venligst det nye samtalenavn.",
     "title": "Omdøb sessionen"
   },
-  "cancel": "Ophæve"
+  "cancel": "Ophæve",
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
+  }
 }

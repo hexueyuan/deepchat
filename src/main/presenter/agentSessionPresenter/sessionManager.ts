@@ -45,6 +45,7 @@ export class NewSessionManager {
     projectDir: string | null,
     options?: {
       isDraft?: boolean
+      isTemporary?: boolean
       disabledAgentTools?: string[]
       subagentEnabled?: boolean
       sessionKind?: SessionKind
@@ -55,6 +56,7 @@ export class NewSessionManager {
     const id = nanoid()
     this.sqlitePresenter.newSessionsTable.create(id, agentId, title, projectDir, {
       isDraft: options?.isDraft,
+      isTemporary: options?.isTemporary,
       disabledAgentTools: options?.disabledAgentTools,
       subagentEnabled: options?.subagentEnabled,
       sessionKind: options?.sessionKind,
@@ -75,6 +77,7 @@ export class NewSessionManager {
       projectDir: row.project_dir,
       isPinned: row.is_pinned === 1,
       isDraft: row.is_draft === 1,
+      isTemporary: row.is_temporary === 1,
       sessionKind: row.session_kind === 'subagent' ? 'subagent' : 'regular',
       parentSessionId: row.parent_session_id ?? null,
       subagentEnabled: row.subagent_enabled === 1,
@@ -98,6 +101,7 @@ export class NewSessionManager {
       projectDir: row.project_dir,
       isPinned: row.is_pinned === 1,
       isDraft: row.is_draft === 1,
+      isTemporary: row.is_temporary === 1,
       sessionKind: row.session_kind === 'subagent' ? 'subagent' : 'regular',
       parentSessionId: row.parent_session_id ?? null,
       subagentEnabled: row.subagent_enabled === 1,
@@ -116,6 +120,7 @@ export class NewSessionManager {
         | 'projectDir'
         | 'isPinned'
         | 'isDraft'
+        | 'isTemporary'
         | 'sessionKind'
         | 'parentSessionId'
         | 'subagentEnabled'
@@ -135,6 +140,7 @@ export class NewSessionManager {
       project_dir?: string | null
       is_pinned?: number
       is_draft?: number
+      is_temporary?: number
       subagent_enabled?: number
       session_kind?: SessionKind
       parent_session_id?: string | null
@@ -144,6 +150,7 @@ export class NewSessionManager {
     if (fields.projectDir !== undefined) dbFields.project_dir = fields.projectDir
     if (fields.isPinned !== undefined) dbFields.is_pinned = fields.isPinned ? 1 : 0
     if (fields.isDraft !== undefined) dbFields.is_draft = fields.isDraft ? 1 : 0
+    if (fields.isTemporary !== undefined) dbFields.is_temporary = fields.isTemporary ? 1 : 0
     if (fields.subagentEnabled !== undefined) {
       dbFields.subagent_enabled = fields.subagentEnabled ? 1 : 0
     }
@@ -171,6 +178,10 @@ export class NewSessionManager {
     for (const path of affectedPaths) {
       this.sqlitePresenter.newEnvironmentsTable.syncPath(path)
     }
+  }
+
+  listTemporaryIds(): string[] {
+    return this.sqlitePresenter.newSessionsTable.listTemporaryIds()
   }
 
   getDisabledAgentTools(id: string): string[] {

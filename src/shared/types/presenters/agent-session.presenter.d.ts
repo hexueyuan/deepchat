@@ -107,6 +107,8 @@ export interface IAgentSessionPresenter {
     format: 'markdown' | 'html' | 'txt' | 'nowledge-mem'
   ): Promise<{ filename: string; content: string }>
   deleteSession(sessionId: string): Promise<void>
+  persistTemporarySession(sessionId: string): Promise<SessionWithState>
+  deleteAllTemporarySessions(): Promise<void>
   cancelGeneration(sessionId: string): Promise<void>
   respondToolInteraction(
     sessionId: string,

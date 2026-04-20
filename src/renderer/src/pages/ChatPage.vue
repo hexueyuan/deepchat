@@ -11,6 +11,7 @@
         :title="sessionTitle"
         :project="sessionProject"
         :is-read-only="isReadOnlySession"
+        :is-temporary="isTemporarySession"
       />
       <div v-if="isChatSearchOpen" class="pointer-events-none sticky top-14 z-20 px-6">
         <div class="mx-auto flex w-full max-w-5xl justify-end">
@@ -155,6 +156,7 @@ const { t } = useI18n()
 const sessionTitle = computed(() => sessionStore.activeSession?.title ?? t('common.newChat'))
 const sessionProject = computed(() => sessionStore.activeSession?.projectDir ?? '')
 const isReadOnlySession = computed(() => sessionStore.activeSession?.sessionKind === 'subagent')
+const isTemporarySession = computed(() => sessionStore.activeSession?.isTemporary === true)
 const isGenerating = computed(
   () => sessionStore.activeSession?.status === 'working' || messageStore.isStreaming
 )

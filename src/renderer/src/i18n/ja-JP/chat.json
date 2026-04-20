@@ -138,7 +138,11 @@
   "topbar": {
     "share": "共有",
     "more": "その他",
-    "backToParent": "親セッションに戻る"
+    "backToParent": "親セッションに戻る",
+    "temporaryBadge": "Temporary",
+    "persistSession": "Persist Session",
+    "persistSuccess": "Session persisted",
+    "newTemporarySession": "New Temporary Session"
   },
   "advancedSettings": {
     "button": "詳細設定",
@@ -298,6 +302,8 @@
     "remoteControlDisabled": "無効",
     "searchPlaceholder": "チャットタイトルを検索",
     "searchAriaLabel": "チャットタイトルを検索",
+    "newSession": "New Session",
+    "newTemporarySession": "New Temporary Session",
     "searchEmptyTitle": "一致する会話はありません",
     "searchEmptyDescription": "別のキーワードを試してください",
     "projectGroup": {

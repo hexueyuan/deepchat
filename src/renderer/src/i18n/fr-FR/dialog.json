@@ -40,5 +40,9 @@
       "functionCall": "Attention : L'activation des appels de fonction désactivera automatiquement le raisonnement, ce qui est une exigence des modèles DeepSeek-V3.1."
     },
     "confirmEnable": "Confirmer l'activation"
+  },
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
   }
 }

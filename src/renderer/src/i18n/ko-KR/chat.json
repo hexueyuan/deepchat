@@ -138,7 +138,11 @@
   "topbar": {
     "share": "공유",
     "more": "더보기",
-    "backToParent": "상위 세션으로 돌아가기"
+    "backToParent": "상위 세션으로 돌아가기",
+    "temporaryBadge": "Temporary",
+    "persistSession": "Persist Session",
+    "persistSuccess": "Session persisted",
+    "newTemporarySession": "New Temporary Session"
   },
   "advancedSettings": {
     "button": "고급 설정",
@@ -298,6 +302,8 @@
     "remoteControlDisabled": "사용 안 함",
     "searchPlaceholder": "채팅 제목 검색",
     "searchAriaLabel": "채팅 제목 검색",
+    "newSession": "New Session",
+    "newTemporarySession": "New Temporary Session",
     "searchEmptyTitle": "일치하는 대화가 없습니다",
     "searchEmptyDescription": "다른 제목 키워드를 시도해 보세요",
     "projectGroup": {

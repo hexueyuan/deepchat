@@ -40,5 +40,9 @@
       "functionCall": "注意：開啟函數調用將自動關閉推理能力，這是 DeepSeek-V3.1 模型的限制要求。"
     },
     "confirmEnable": "確認開啟"
+  },
+  "replaceTemporarySession": {
+    "title": "新建臨時會話",
+    "description": "將清空當前會話內容並創建新臨時會話，確認繼續？"
   }
 }

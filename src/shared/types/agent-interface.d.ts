@@ -544,6 +544,7 @@ export interface SessionRecord {
   projectDir: string | null
   isPinned: boolean
   isDraft?: boolean
+  isTemporary?: boolean
   sessionKind: SessionKind
   parentSessionId?: string | null
   subagentEnabled: boolean
@@ -591,6 +592,7 @@ export interface CreateSessionInput {
   activeSkills?: string[]
   disabledAgentTools?: string[]
   subagentEnabled?: boolean
+  isTemporary?: boolean
   generationSettings?: Partial<SessionGenerationSettings>
 }
 

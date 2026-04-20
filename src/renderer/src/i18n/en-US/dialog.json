@@ -17,6 +17,10 @@
     "description": "This will delete all messages and files in this conversation. Are you sure you want to continue?",
     "confirm": "Clear"
   },
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
+  },
   "fork": {
     "title": "Create Branch",
     "description": "This will copy all messages from the first message to the current message into a new conversation where you can continue the dialogue.",

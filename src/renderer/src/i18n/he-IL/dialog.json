@@ -40,5 +40,9 @@
       "functionCall": "שים לב: הפעלת קריאה לפונקציות תשבית אוטומטית את החשיבה, שכן זו דרישה של מודלי DeepSeek-V3.1."
     },
     "confirmEnable": "אשר הפעלה"
+  },
+  "replaceTemporarySession": {
+    "title": "New Temporary Session",
+    "description": "This will clear the current session and create a new temporary session. Continue?"
   }
 }

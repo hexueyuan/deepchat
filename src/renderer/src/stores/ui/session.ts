@@ -30,6 +30,7 @@ export interface UISession {
   modelId: string
   isPinned: boolean
   isDraft: boolean
+  isTemporary: boolean
   sessionKind: SessionKind
   parentSessionId: string | null
   subagentEnabled: boolean
@@ -88,6 +89,7 @@ function mapToUISession(session: SessionWithState): UISession {
     modelId: session.modelId,
     isPinned: Boolean(session.isPinned),
     isDraft: Boolean(session.isDraft),
+    isTemporary: Boolean(session.isTemporary),
     sessionKind: session.sessionKind,
     parentSessionId: session.parentSessionId ?? null,
     subagentEnabled: session.subagentEnabled,
@@ -209,6 +211,7 @@ export const useSessionStore = defineStore('session', () => {
   // --- State ---
   const sessions = ref<UISession[]>([])
   const activeSessionId = ref<string | null>(null)
+  const nextSessionIsTemporary = ref(false)
   const groupMode = ref<GroupMode>(DEFAULT_GROUP_MODE)
   const projectGroupMetadata = ref<Record<string, ProjectGroupMetadata>>({})
   const loading = ref(false)
@@ -388,6 +391,10 @@ export const useSessionStore = defineStore('session', () => {
   async function createSession(input: CreateSessionInput): Promise<void> {
     error.value = null
     try {
+      if (nextSessionIsTemporary.value) {
+        input = { ...input, isTemporary: true }
+        nextSessionIsTemporary.value = false
+      }
       const webContentsId = getCurrentWebContentsId()
       const session = await agentSessionPresenter.createSession(input, webContentsId)
       activeSessionId.value = session.id
@@ -395,6 +402,7 @@ export const useSessionStore = defineStore('session', () => {
       await fetchSessions()
       pageRouter.goToChat(session.id)
     } catch (e) {
+      nextSessionIsTemporary.value = false
       error.value = `Failed to create session: ${e}`
     }
   }
@@ -446,6 +454,33 @@ export const useSessionStore = defineStore('session', () => {
     }
 
     pageRouter.goToNewThread({ refresh: options.refresh ?? true })
+  }
+
+  async function startNewTemporaryConversation(
+    options: StartNewConversationOptions = {}
+  ): Promise<void> {
+    nextSessionIsTemporary.value = true
+    await startNewConversation(options)
+  }
+
+  async function persistTemporarySession(sessionId: string): Promise<void> {
+    try {
+      await agentSessionPresenter.persistTemporarySession(sessionId)
+      await fetchSessions()
+    } catch (e) {
+      error.value = `Failed to persist session: ${e}`
+    }
+  }
+
+  async function replaceTemporarySession(sessionId: string): Promise<void> {
+    try {
+      await agentSessionPresenter.deleteSession(sessionId)
+      nextSessionIsTemporary.value = true
+      activeSessionId.value = null
+      pageRouter.goToNewThread({ refresh: true })
+    } catch (e) {
+      error.value = `Failed to replace temporary session: ${e}`
+    }
   }
 
   async function sendMessage(sessionId: string, content: string | SendMessageInput): Promise<void> {
@@ -607,7 +642,10 @@ export const useSessionStore = defineStore('session', () => {
 
   function getPinnedSessions(agentId: string | null): UISession[] {
     const pinned = sessions.value
-      .filter((session) => isRegularSession(session) && session.isPinned && !session.isDraft)
+      .filter(
+        (session) =>
+          isRegularSession(session) && session.isPinned && !session.isDraft && !session.isTemporary
+      )
       .sort((a, b) => b.updatedAt - a.updatedAt)
 
     if (agentId === null) return pinned
@@ -617,7 +655,8 @@ export const useSessionStore = defineStore('session', () => {
 
   function getFilteredGroups(agentId: string | null): SessionGroup[] {
     const visibleSessions = sessions.value.filter(
-      (session) => isRegularSession(session) && !session.isDraft && !session.isPinned
+      (session) =>
+        isRegularSession(session) && !session.isDraft && !session.isPinned && !session.isTemporary
     )
     let grouped =
       groupMode.value === 'time' ? groupByTime(visibleSessions) : groupByProject(visibleSessions)
@@ -695,6 +734,10 @@ export const useSessionStore = defineStore('session', () => {
     selectSession,
     closeSession,
     startNewConversation,
+    startNewTemporaryConversation,
+    persistTemporarySession,
+    replaceTemporarySession,
+    nextSessionIsTemporary,
     renameSession,
     toggleSessionPinned,
     clearSessionMessages,

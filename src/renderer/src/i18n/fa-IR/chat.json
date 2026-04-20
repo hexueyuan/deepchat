@@ -138,7 +138,11 @@
   "topbar": {
     "share": "اشتراک‌گذاری",
     "more": "بیشتر",
-    "backToParent": "بازگشت به نشست والد"
+    "backToParent": "بازگشت به نشست والد",
+    "temporaryBadge": "Temporary",
+    "persistSession": "Persist Session",
+    "persistSuccess": "Session persisted",
+    "newTemporarySession": "New Temporary Session"
   },
   "advancedSettings": {
     "button": "پیشرفته",
@@ -298,6 +302,8 @@
     "remoteControlDisabled": "غیرفعال",
     "searchPlaceholder": "جستجوی گفتگوها",
     "searchAriaLabel": "جستجوی گفتگوها",
+    "newSession": "New Session",
+    "newTemporarySession": "New Temporary Session",
     "searchEmptyTitle": "گفتگوی منطبقی پیدا نشد",
     "searchEmptyDescription": "یک کلیدواژه دیگر برای عنوان امتحان کنید",
     "projectGroup": {
