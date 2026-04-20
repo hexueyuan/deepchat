@@ -159,7 +159,6 @@ jobs:
           pnpm run build
           pnpm exec electron-builder --mac --arm64 --publish=never
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: '--max-old-space-size=4096'
 
