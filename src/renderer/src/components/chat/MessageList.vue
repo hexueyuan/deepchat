@@ -51,6 +51,11 @@
           :is-read-only="isReadOnly"
         />
       </div>
+      <GeneratingIndicator
+        v-if="isGenerating && generatingPhaseText"
+        :text="generatingPhaseText"
+        class="pl-11 pt-2"
+      />
     </div>
   </div>
 </template>
@@ -79,6 +84,7 @@ const props = withDefaults(
     ephemeralRateLimitBlock?: DisplayAssistantMessageBlock | null
     ephemeralRateLimitMessageId?: string | null
     isGenerating?: boolean
+    generatingPhaseText?: string
     traceMessageIds?: string[]
     isReadOnly?: boolean
   }>(),
@@ -87,6 +93,7 @@ const props = withDefaults(
     ephemeralRateLimitBlock: null,
     ephemeralRateLimitMessageId: null,
     isGenerating: false,
+    generatingPhaseText: '',
     traceMessageIds: () => [],
     isReadOnly: false
   }

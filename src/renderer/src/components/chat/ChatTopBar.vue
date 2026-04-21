@@ -28,6 +28,11 @@
       >
         {{ t('chat.topbar.temporaryBadge') }}
       </span>
+      <GeneratingIndicator
+        v-if="isGenerating && generatingPhaseText"
+        :text="generatingPhaseText"
+        class="shrink-0"
+      />
     </div>
 
     <div class="flex items-center gap-1 no-drag">
@@ -198,6 +203,7 @@
 import { computed, ref, useAttrs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Icon } from '@iconify/vue'
+import GeneratingIndicator from '@/components/chat/GeneratingIndicator.vue'
 import { Button } from '@shadcn/components/ui/button'
 import { Input } from '@shadcn/components/ui/input'
 import {
@@ -230,6 +236,8 @@ const props = defineProps<{
   project: string
   isReadOnly?: boolean
   isTemporary?: boolean
+  isGenerating?: boolean
+  generatingPhaseText?: string
 }>()
 
 const attrs = useAttrs()
