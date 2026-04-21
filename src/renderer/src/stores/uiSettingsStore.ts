@@ -36,6 +36,12 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     () => FONT_SIZE_CLASSES[fontSizeLevel.value] || FONT_SIZE_CLASSES[DEFAULT_FONT_SIZE_LEVEL]
   )
 
+  const FONT_SCALE_VALUES = [0.875, 1, 1.125, 1.25, 1.5] // maps to text-sm..text-2xl
+
+  const fontScale = computed(
+    () => FONT_SCALE_VALUES[fontSizeLevel.value] ?? FONT_SCALE_VALUES[DEFAULT_FONT_SIZE_LEVEL]
+  )
+
   const formattedFontFamily = computed(() =>
     buildFontStack(fontFamily.value, DEFAULT_TEXT_FONT_STACK)
   )
@@ -202,6 +208,7 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
   return {
     fontSizeLevel,
     fontSizeClass,
+    fontScale,
     fontFamily,
     codeFontFamily,
     systemFonts,

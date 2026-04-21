@@ -70,7 +70,7 @@ const resolveThemeName = (themeMode: ThemeMode, isDark: boolean) => {
   return themeMode === 'system' ? (isDark ? 'dark' : 'light') : themeMode
 }
 
-const syncAppearanceClasses = (themeName: string, fontSizeClass: string) => {
+const syncAppearanceClasses = (themeName: string, fontSizeClass: string, fontScale: number) => {
   if (typeof document === 'undefined') {
     return
   }
@@ -81,13 +81,19 @@ const syncAppearanceClasses = (themeName: string, fontSizeClass: string) => {
     target.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl', 'text-2xl')
     target.classList.add(fontSizeClass)
   }
+  document.documentElement.style.setProperty('--dc-font-scale', String(fontScale))
 }
 
 watch(
-  [() => themeStore.themeMode, () => themeStore.isDark, () => uiSettingsStore.fontSizeClass],
-  ([themeMode, isDark, fontSizeClass]) => {
+  [
+    () => themeStore.themeMode,
+    () => themeStore.isDark,
+    () => uiSettingsStore.fontSizeClass,
+    () => uiSettingsStore.fontScale
+  ],
+  ([themeMode, isDark, fontSizeClass, fontScale]) => {
     const nextThemeName = resolveThemeName(themeMode, isDark)
-    syncAppearanceClasses(nextThemeName, fontSizeClass)
+    syncAppearanceClasses(nextThemeName, fontSizeClass, fontScale)
     console.log('newTheme', nextThemeName)
   },
   { immediate: true }
