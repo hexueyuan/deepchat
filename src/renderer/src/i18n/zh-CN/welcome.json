@@ -36,18 +36,23 @@
   },
   "page": {
     "title": "欢迎使用 DeepChat Agent",
-    "description": "连接一个模型服务商即可开始使用",
-    "browseProviders": "浏览所有服务商...",
-    "connectAgent": "或连接一个 Agent",
-    "acpTitle": "设置 ACP Agent",
-    "acpDescription": "Claude Code、Codex、Kimi，或你自己的 Agent",
-    "providers": {
-      "claude": "Claude",
-      "openai": "OpenAI",
-      "deepseek": "DeepSeek",
-      "gemini": "Gemini",
-      "ollama": "Ollama",
-      "openrouter": "OpenRouter"
+    "description": "配置自定义模型服务即可开始使用",
+    "form": {
+      "name": "名称",
+      "namePlaceholder": "例如 我的服务商",
+      "apiType": "API 类型",
+      "apiTypePlaceholder": "选择 API 类型",
+      "apiKey": "API 密钥",
+      "apiKeyPlaceholder": "输入 API 密钥",
+      "baseUrl": "API 地址",
+      "baseUrlPlaceholder": "输入 API 地址",
+      "verifyConnection": "验证连接",
+      "verifying": "验证中...",
+      "verifySuccess": "连接成功",
+      "verifyFailed": "连接失败",
+      "noModelsLoaded": "未能获取模型列表，请检查API地址和密钥",
+      "skipVerify": "跳过验证并继续",
+      "startUsing": "开始使用"
     }
   }
 }

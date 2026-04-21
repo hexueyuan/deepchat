@@ -8,7 +8,6 @@
     "searchEngine": "Search Engine",
     "searchEngineSelect": "Select search engine",
     "searchPreview": "Search Preview",
-    "autoScrollEnabled": "Auto-scroll while generating",
     "autoCompaction": {
       "title": "Auto Compaction",
       "enabled": "Enable auto compaction",

@@ -318,7 +318,9 @@ export async function processStream(params: ProcessParams): Promise<ProcessResul
   let currentTools = [...tools]
   let toolCallCount = 0
 
-  console.log(`[ProcessStream] start session=${io.sessionId} message=${io.messageId}`)
+  console.log(
+    `[ProcessStream] start session=${io.sessionId} message=${io.messageId} provider=${providerId} model=${modelId}`
+  )
   let eventCount = 0
 
   try {
@@ -508,7 +510,10 @@ export async function processStream(params: ProcessParams): Promise<ProcessResul
         usage: buildUsageSnapshot(state)
       }
     }
-    console.error(`[ProcessStream] exception after ${eventCount} events:`, err)
+    console.error(
+      `[ProcessStream] exception provider=${providerId} model=${modelId} after ${eventCount} events:`,
+      err
+    )
     finalizeError(state, io, err)
     return {
       status: 'error' as const,

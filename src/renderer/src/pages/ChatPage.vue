@@ -126,7 +126,6 @@ import { useMessageStore } from '@/stores/ui/message'
 import { usePendingInputStore } from '@/stores/ui/pendingInput'
 import { useSpotlightStore } from '@/stores/ui/spotlight'
 import { useModelStore } from '@/stores/modelStore'
-import { useUiSettingsStore } from '@/stores/uiSettingsStore'
 import { usePresenter } from '@/composables/usePresenter'
 import {
   applyChatSearchHighlights,
@@ -151,7 +150,6 @@ const messageStore = useMessageStore()
 const pendingInputStore = usePendingInputStore()
 const spotlightStore = useSpotlightStore()
 const modelStore = useModelStore()
-const uiSettingsStore = useUiSettingsStore()
 const agentSessionPresenter = usePresenter('agentSessionPresenter')
 const { t } = useI18n()
 
@@ -347,6 +345,7 @@ function toDisplayMessage(record: ChatMessageRecord): DisplayMessage {
   const metadata = messageStore.getMessageMetadata(record)
   const modelId = metadata.model || sessionStore.activeSession?.modelId || ''
   const providerId = metadata.provider || sessionStore.activeSession?.providerId || ''
+  const agentId = sessionStore.activeSession?.agentId || ''
   const cached = displayMessageCache.get(record.id)
   if (
     cached &&
@@ -369,6 +368,7 @@ function toDisplayMessage(record: ChatMessageRecord): DisplayMessage {
     model_name: modelName,
     model_id: modelId,
     model_provider: providerId,
+    agentId,
     status: record.status,
     error: '',
     usage: buildUsage(metadata),
@@ -422,6 +422,7 @@ function toStreamingMessage(
     model_name: resolveAssistantModelName(modelId),
     model_id: modelId,
     model_provider: sessionStore.activeSession?.providerId ?? '',
+    agentId: sessionStore.activeSession?.agentId ?? '',
     status: 'pending',
     error: '',
     usage: buildUsage({}),
@@ -511,10 +512,8 @@ watch(
       return
     }
 
-    const isStreaming = !!messageStore.currentStreamMessageId
-    const streamAutoScroll = uiSettingsStore.autoScrollEnabled && isStreaming
-    if (isNearBottom.value || streamAutoScroll) {
-      scrollToBottom(streamAutoScroll)
+    if (isNearBottom.value) {
+      scrollToBottom(false)
     }
   },
   { flush: 'post' }

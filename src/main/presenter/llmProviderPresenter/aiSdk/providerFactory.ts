@@ -13,7 +13,7 @@ import { createVertex } from '@ai-sdk/google-vertex'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOllama } from 'ollama-ai-provider'
-import { ProxyAgent } from 'undici'
+import { EnvHttpProxyAgent } from 'undici'
 import { proxyConfig } from '../../proxyConfig'
 import { createReasoningMiddleware } from './middlewares/reasoningMiddleware'
 
@@ -189,16 +189,20 @@ function createFetchMiddleware(
   cleanHeaders = false
 ) {
   const proxyUrl = proxyConfig.getProxyUrl()
-  const dispatcher = proxyUrl ? new ProxyAgent(proxyUrl) : undefined
+  const noProxy = process.env.no_proxy || process.env.NO_PROXY || ''
+  const dispatcher = proxyUrl
+    ? new EnvHttpProxyAgent({ httpProxy: proxyUrl, httpsProxy: proxyUrl, noProxy })
+    : undefined
 
   return async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
     const requestUrl = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url
-    const nextInit: RequestInit & { dispatcher?: ProxyAgent } = {
+    const nextInit: RequestInit & { dispatcher?: EnvHttpProxyAgent } = {
       ...init
     }
 
     if (dispatcher) {
       nextInit.dispatcher = dispatcher
+      console.log(`[AiSdk] fetch ${requestUrl} via proxy=${proxyUrl} noProxy=${noProxy}`)
     }
 
     const headers = new Headers(init?.headers ?? {})

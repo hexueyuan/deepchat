@@ -1558,14 +1558,6 @@ export class ConfigPresenter implements IConfigPresenter {
     this.uiSettingsHelper.setSearchPreviewEnabled(enabled)
   }
 
-  getAutoScrollEnabled(): boolean {
-    return this.uiSettingsHelper.getAutoScrollEnabled()
-  }
-
-  setAutoScrollEnabled(enabled: boolean): void {
-    this.uiSettingsHelper.setAutoScrollEnabled(enabled)
-  }
-
   getAutoCompactionEnabled(): boolean {
     return (
       this.getBuiltinDeepChatConfig().autoCompactionEnabled ??

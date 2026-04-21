@@ -466,6 +466,10 @@ export class AiSdkProvider extends BaseLLMProvider {
       headers['api-key'] = runtimeProvider.apiKey
     } else {
       headers.Authorization = `Bearer ${runtimeProvider.oauthToken || runtimeProvider.apiKey}`
+      // Custom providers may use Anthric-style x-api-key auth
+      if (this.provider.custom && runtimeProvider.apiKey) {
+        headers['x-api-key'] = runtimeProvider.apiKey
+      }
     }
 
     return headers
@@ -905,10 +909,19 @@ export class AiSdkProvider extends BaseLLMProvider {
     strategy: AiSdkModelSourceStrategy
   ): Promise<MODEL_META[]> {
     switch (strategy) {
-      case 'config-db':
+      case 'config-db': {
+        // Custom providers should always try to fetch models from the API
+        if (this.provider.custom) {
+          return this.fetchDefaultOpenAIModels({ timeout: this.getModelFetchTimeout() })
+        }
         return this.mapConfigDbModels(this.definition.providerDbSourceId)
-      case 'provider-db':
+      }
+      case 'provider-db': {
+        if (this.provider.custom) {
+          return this.fetchDefaultOpenAIModels({ timeout: this.getModelFetchTimeout() })
+        }
         return this.mapProviderDbModels(this.definition.providerDbGroup || 'default')
+      }
       case 'github': {
         const response = await this.fetchOpenAIModelRecords({
           timeout: this.getModelFetchTimeout()

@@ -4,13 +4,6 @@
       <UploadFileSettingsSection />
       <ProxySettingsSection />
       <SettingToggleRow
-        id="auto-scroll-switch"
-        icon="lucide:arrow-down"
-        :label="t('settings.common.autoScrollEnabled')"
-        :model-value="autoScrollEnabled"
-        @update:model-value="handleAutoScrollChange"
-      />
-      <SettingToggleRow
         id="copy-with-cot-switch"
         icon="lucide:file-text"
         :label="t('settings.common.copyWithCotEnabled')"
@@ -42,13 +35,8 @@ import UploadFileSettingsSection from './common/UploadFileSettingsSection.vue'
 const { t } = useI18n()
 const uiSettingsStore = useUiSettingsStore()
 
-const autoScrollEnabled = computed(() => uiSettingsStore.autoScrollEnabled)
 const copyWithCotEnabled = computed(() => uiSettingsStore.copyWithCotEnabled)
 const traceDebugEnabled = computed(() => uiSettingsStore.traceDebugEnabled)
-
-const handleAutoScrollChange = (value: boolean) => {
-  uiSettingsStore.setAutoScrollEnabled(value)
-}
 
 const handleCopyWithCotChange = (value: boolean) => {
   uiSettingsStore.setCopyWithCotEnabled(value)

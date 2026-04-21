@@ -21,7 +21,6 @@ export const CONFIG_EVENTS = {
   SYNC_SETTINGS_CHANGED: 'config:sync-settings-changed',
   SEARCH_ENGINES_UPDATED: 'config:search-engines-updated',
   SEARCH_PREVIEW_CHANGED: 'config:search-preview-changed',
-  AUTO_SCROLL_CHANGED: 'config:auto-scroll-changed',
   NOTIFICATIONS_CHANGED: 'config:notifications-changed',
   CONTENT_PROTECTION_CHANGED: 'config:content-protection-changed',
   COPY_WITH_COT_CHANGED: 'config:copy-with-cot-enabled-changed',

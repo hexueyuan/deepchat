@@ -36,18 +36,23 @@
   },
   "page": {
     "title": "Welcome to DeepChat Agent",
-    "description": "Connect a model provider to get started",
-    "browseProviders": "Browse all providers...",
-    "connectAgent": "or connect an agent",
-    "acpTitle": "Set up an ACP agent",
-    "acpDescription": "Claude Code, Codex, Kimi, or your own",
-    "providers": {
-      "claude": "Claude",
-      "openai": "OpenAI",
-      "deepseek": "DeepSeek",
-      "gemini": "Gemini",
-      "ollama": "Ollama",
-      "openrouter": "OpenRouter"
+    "description": "Configure a custom model service to get started",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g. My Provider",
+      "apiType": "API Type",
+      "apiTypePlaceholder": "Select API type",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "Enter API key",
+      "baseUrl": "API Base URL",
+      "baseUrlPlaceholder": "Enter API base URL",
+      "verifyConnection": "Verify Connection",
+      "verifying": "Verifying...",
+      "verifySuccess": "Connection successful",
+      "verifyFailed": "Connection failed",
+      "noModelsLoaded": "Failed to load model list, please check API URL and key",
+      "skipVerify": "Skip verification and continue",
+      "startUsing": "Get Started"
     }
   }
 }

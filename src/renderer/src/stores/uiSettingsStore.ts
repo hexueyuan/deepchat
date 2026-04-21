@@ -23,7 +23,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
   const systemFonts = ref<string[]>([])
   const isLoadingFonts = ref(false)
   const artifactsEffectEnabled = ref(false)
-  const autoScrollEnabled = ref(true)
   const contentProtectionEnabled = ref(false)
   const copyWithCotEnabled = ref(true)
   const autoCompactionEnabled = ref(true)
@@ -54,7 +53,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     codeFontFamily.value = (await configP.getCodeFontFamily()) ?? ''
     artifactsEffectEnabled.value =
       (await configP.getSetting<boolean>('artifactsEffectEnabled')) ?? false
-    autoScrollEnabled.value = (await configP.getAutoScrollEnabled()) ?? true
     autoCompactionEnabled.value = (await configP.getAutoCompactionEnabled()) ?? true
     autoCompactionTriggerThreshold.value =
       (await configP.getAutoCompactionTriggerThreshold()) ??
@@ -102,11 +100,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     } finally {
       isLoadingFonts.value = false
     }
-  }
-
-  const setAutoScrollEnabled = async (enabled: boolean) => {
-    autoScrollEnabled.value = enabled
-    await configP.setAutoScrollEnabled(enabled)
   }
 
   const setAutoCompactionEnabled = async (enabled: boolean) => {
@@ -170,9 +163,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     window.electron.ipcRenderer.on(CONFIG_EVENTS.FONT_SIZE_CHANGED, (_event, value) => {
       fontSizeLevel.value = value
     })
-    window.electron.ipcRenderer.on(CONFIG_EVENTS.AUTO_SCROLL_CHANGED, (_event, value) => {
-      autoScrollEnabled.value = value
-    })
     window.electron.ipcRenderer.on(CONFIG_EVENTS.CONTENT_PROTECTION_CHANGED, (_event, value) => {
       contentProtectionEnabled.value = value
     })
@@ -201,7 +191,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
   onBeforeUnmount(() => {
     if (!window?.electron?.ipcRenderer) return
     window.electron.ipcRenderer.removeAllListeners(CONFIG_EVENTS.FONT_SIZE_CHANGED)
-    window.electron.ipcRenderer.removeAllListeners(CONFIG_EVENTS.AUTO_SCROLL_CHANGED)
     window.electron.ipcRenderer.removeAllListeners(CONFIG_EVENTS.CONTENT_PROTECTION_CHANGED)
     window.electron.ipcRenderer.removeAllListeners(CONFIG_EVENTS.COPY_WITH_COT_CHANGED)
     window.electron.ipcRenderer.removeAllListeners(CONFIG_EVENTS.TRACE_DEBUG_CHANGED)
@@ -220,7 +209,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     formattedFontFamily,
     formattedCodeFontFamily,
     artifactsEffectEnabled,
-    autoScrollEnabled,
     autoCompactionEnabled,
     autoCompactionTriggerThreshold,
     autoCompactionRetainRecentPairs,
@@ -234,7 +222,6 @@ export const useUiSettingsStore = defineStore('uiSettings', () => {
     setCodeFontFamily,
     resetFontSettings,
     fetchSystemFonts,
-    setAutoScrollEnabled,
     setAutoCompactionEnabled,
     setAutoCompactionTriggerThreshold,
     setAutoCompactionRetainRecentPairs,

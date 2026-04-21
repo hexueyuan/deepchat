@@ -11,8 +11,14 @@
         @contextmenu.capture="handleContextMenuOpen"
       >
         <div class="shrink-0 w-5 h-5 flex items-center justify-center">
+          <AgentAvatar
+            v-if="resolvedAgent"
+            :agent="resolvedAgent"
+            class-name="w-[18px] h-[18px]"
+            fallback-class-name="rounded-sm"
+          />
           <ModelIcon
-            v-if="currentMessage.model_provider === 'acp'"
+            v-else-if="currentMessage.model_provider === 'acp'"
             :model-id="currentMessage.model_id"
             :is-dark="themeStore.isDark"
             custom-class="w-[18px] h-[18px]"
@@ -27,7 +33,7 @@
         </div>
 
         <div class="flex flex-col w-full space-y-1.5">
-          <MessageInfo :name="currentMessage.model_name" :timestamp="currentMessage.timestamp" />
+          <MessageInfo :name="assistantDisplayName" :timestamp="currentMessage.timestamp" />
           <Spinner
             v-if="
               currentContent.length === 0 &&
@@ -179,6 +185,8 @@ import MessageToolbar from './MessageToolbar.vue'
 import MessageInfo from './MessageInfo.vue'
 import { useUiSettingsStore } from '@/stores/uiSettingsStore'
 import ModelIcon from '@/components/icons/ModelIcon.vue'
+import AgentAvatar from '@/components/icons/AgentAvatar.vue'
+import { useAgentStore } from '@/stores/ui/agent'
 import { Spinner } from '@shadcn/components/ui/spinner'
 import MessageBlockAction from './MessageBlockAction.vue'
 import { useI18n } from 'vue-i18n'
@@ -214,7 +222,18 @@ const props = defineProps<{
 
 const themeStore = useThemeStore()
 const uiSettingsStore = useUiSettingsStore()
+const agentStore = useAgentStore()
 const { t } = useI18n()
+
+const resolvedAgent = computed(() => {
+  const agentId = props.message.agentId
+  if (!agentId) return null
+  return agentStore.agents.find((a) => a.id === agentId) ?? null
+})
+
+const assistantDisplayName = computed(
+  () => resolvedAgent.value?.name || currentMessage.value.model_name
+)
 
 const AUDIO_EXTENSIONS = ['.mp3', '.wav', '.m4a', '.aac', '.flac', '.ogg', '.opus', '.webm']
 

@@ -150,6 +150,7 @@ type DisplayMessageBase = {
   model_name: string
   model_id: string
   model_provider: string
+  agentId: string
   status: 'sent' | 'pending' | 'error'
   error: string
   usage: DisplayMessageUsage

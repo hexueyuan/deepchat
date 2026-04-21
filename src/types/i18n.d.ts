@@ -1279,7 +1279,6 @@ declare module 'vue-i18n' {
       searchEngine: string
       searchEngineSelect: string
       searchPreview: string
-      autoScrollEnabled: string
       autoCompaction: {
         title: string
         enabled: string

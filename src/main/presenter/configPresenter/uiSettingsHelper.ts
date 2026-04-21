@@ -56,18 +56,6 @@ export class UiSettingsHelper {
     eventBus.send(CONFIG_EVENTS.SEARCH_PREVIEW_CHANGED, SendTarget.ALL_WINDOWS, boolValue)
   }
 
-  getAutoScrollEnabled(): boolean {
-    const value = this.getSetting<boolean>('autoScrollEnabled')
-    if (value === undefined) return true
-    return Boolean(value)
-  }
-
-  setAutoScrollEnabled(enabled: boolean): void {
-    const boolValue = Boolean(enabled)
-    this.setSetting('autoScrollEnabled', boolValue)
-    eventBus.send(CONFIG_EVENTS.AUTO_SCROLL_CHANGED, SendTarget.ALL_WINDOWS, boolValue)
-  }
-
   getAutoCompactionEnabled(): boolean {
     const value = this.getSetting<boolean>('autoCompactionEnabled')
     if (value === undefined) return true

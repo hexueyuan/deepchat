@@ -316,6 +316,10 @@ export async function* runAiSdkCoreStream(
     body: requestBody
   })
 
+  console.log(
+    `[AiSdk] streamText provider=${context.provider.id} model=${runtime.providerContext.resolvedModelId ?? modelId} endpoint=${runtime.providerContext.endpoint}`
+  )
+
   const result = streamText({
     model: runtime.providerContext.model,
     messages: runtime.messages,
