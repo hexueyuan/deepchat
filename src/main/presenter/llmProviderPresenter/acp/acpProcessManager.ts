@@ -32,6 +32,7 @@ import {
   createEmptyAcpConfigState,
   getAcpConfigOptionByCategory,
   getLegacyModeState,
+  hasAcpConfigStateData,
   normalizeAcpConfigState,
   updateAcpConfigStateValue
 } from './acpConfigState'
@@ -295,12 +296,18 @@ export class AcpProcessManager implements AgentProcessManager<AcpProcessHandle, 
         handle.boundConversationId = undefined
         handle.workdir = resolvedWorkdir
         this.handles.set(warmupKey, handle)
-        void this.fetchProcessConfigState(handle).catch((error) => {
-          console.warn(
-            `[ACP] Failed to fetch config options during warmup for agent ${agent.id}:`,
-            error
-          )
-        })
+        if (!hasAcpConfigStateData(handle.configState)) {
+          void this.fetchProcessConfigState(handle).catch((error) => {
+            console.warn(
+              `[ACP] Failed to fetch config options during warmup for agent ${agent.id}:`,
+              error
+            )
+          })
+        } else {
+          this.syncAgentCache(handle)
+          this.notifyConfigOptionsReady(handle)
+          this.notifyModesReady(handle)
+        }
         this.applyPreferredMode(handle, preferredModeId)
         console.info(
           `[ACP] Warmup process ready for agent ${agent.id} (pid=${handle.pid}, workdir=${resolvedWorkdir})`
