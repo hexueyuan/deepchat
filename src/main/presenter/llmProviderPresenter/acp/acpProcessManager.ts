@@ -32,7 +32,6 @@ import {
   createEmptyAcpConfigState,
   getAcpConfigOptionByCategory,
   getLegacyModeState,
-  hasAcpConfigStateData,
   normalizeAcpConfigState,
   updateAcpConfigStateValue
 } from './acpConfigState'
@@ -296,18 +295,9 @@ export class AcpProcessManager implements AgentProcessManager<AcpProcessHandle, 
         handle.boundConversationId = undefined
         handle.workdir = resolvedWorkdir
         this.handles.set(warmupKey, handle)
-        if (!hasAcpConfigStateData(handle.configState)) {
-          void this.fetchProcessConfigState(handle).catch((error) => {
-            console.warn(
-              `[ACP] Failed to fetch config options during warmup for agent ${agent.id}:`,
-              error
-            )
-          })
-        } else {
-          this.syncAgentCache(handle)
-          this.notifyConfigOptionsReady(handle)
-          this.notifyModesReady(handle)
-        }
+        this.syncAgentCache(handle)
+        this.notifyConfigOptionsReady(handle)
+        this.notifyModesReady(handle)
         this.applyPreferredMode(handle, preferredModeId)
         console.info(
           `[ACP] Warmup process ready for agent ${agent.id} (pid=${handle.pid}, workdir=${resolvedWorkdir})`
@@ -1009,65 +999,6 @@ export class AcpProcessManager implements AgentProcessManager<AcpProcessHandle, 
     } catch (error) {
       console.error('[ACP] Permission resolver failed:', error)
       return { outcome: { outcome: 'cancelled' } }
-    }
-  }
-
-  private async fetchProcessConfigState(handle: AcpProcessHandle): Promise<void> {
-    if (!this.isHandleAlive(handle)) return
-    try {
-      const response = await handle.connection.newSession({
-        cwd: handle.workdir,
-        mcpServers: []
-      })
-      if (response.sessionId) {
-        this.registerSessionWorkdir(response.sessionId, handle.workdir)
-      }
-
-      handle.configState = normalizeAcpConfigState({
-        configOptions: response.configOptions,
-        models: response.models,
-        modes: response.modes
-      })
-
-      const legacyModeState = getLegacyModeState(handle.configState)
-      if (legacyModeState?.availableModes?.length) {
-        handle.availableModes = legacyModeState.availableModes
-        if (
-          handle.currentModeId &&
-          handle.availableModes.some((mode) => mode.id === handle.currentModeId)
-        ) {
-          const modeOption = getAcpConfigOptionByCategory(handle.configState, 'mode')
-          if (modeOption?.type === 'select') {
-            handle.configState =
-              updateAcpConfigStateValue(handle.configState, modeOption.id, handle.currentModeId) ??
-              handle.configState
-          }
-        } else if (legacyModeState.currentModeId) {
-          handle.currentModeId = legacyModeState.currentModeId
-        } else {
-          handle.currentModeId = handle.availableModes[0]?.id ?? handle.currentModeId
-        }
-        this.notifyModesReady(handle)
-      }
-      this.syncAgentCache(handle)
-      this.notifyConfigOptionsReady(handle)
-
-      if (response.sessionId) {
-        try {
-          await handle.connection.cancel({ sessionId: response.sessionId })
-          this.clearSession(response.sessionId)
-        } catch (cancelError) {
-          console.warn(
-            `[ACP] Failed to cancel warmup session ${response.sessionId} for agent ${handle.agentId}:`,
-            cancelError
-          )
-        }
-      }
-    } catch (error) {
-      console.warn(
-        `[ACP] Warmup session failed to fetch config options for agent ${handle.agentId}:`,
-        error
-      )
     }
   }
 
