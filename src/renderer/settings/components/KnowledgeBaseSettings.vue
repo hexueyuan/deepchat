@@ -8,20 +8,12 @@
 
       <!-- 知识库列表 -->
       <div class="space-y-4">
-        <!-- RAGFlow知识库 -->
-        <RagflowKnowledgeSettings ref="ragflowSettingsRef" />
-        <!-- Dify知识库 -->
-        <DifyKnowledgeSettings ref="difySettingsRef" />
-        <!-- FastGPT知识库 -->
-        <FastGptKnowledgeSettings ref="fastGptSettingsRef" />
         <!-- 内置知识库 -->
         <BuiltinKnowledgeSettings
           v-if="enableBuiltinKnowledge"
           ref="builtinSettingsRef"
           @showDetail="showDetail"
         />
-        <!-- NowledgeMem Integration -->
-        <NowledgeMemSettings ref="nowledgeMemSettingsRef" />
       </div>
     </div>
     <div v-if="showBuiltinKnowledgeDetail">
@@ -38,19 +30,11 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ScrollArea } from '@shadcn/components/ui/scroll-area'
-import RagflowKnowledgeSettings from './RagflowKnowledgeSettings.vue'
-import DifyKnowledgeSettings from './DifyKnowledgeSettings.vue'
-import FastGptKnowledgeSettings from './FastGptKnowledgeSettings.vue'
-import NowledgeMemSettings from './NowledgeMemSettings.vue'
 import BuiltinKnowledgeSettings from './BuiltinKnowledgeSettings.vue'
 import KnowledgeFile from './KnowledgeFile.vue'
 import { BuiltinKnowledgeConfig } from '@shared/presenter'
 import { usePresenter } from '@/composables/usePresenter'
 
-const difySettingsRef = ref<InstanceType<typeof DifyKnowledgeSettings> | null>(null)
-const ragflowSettingsRef = ref<InstanceType<typeof RagflowKnowledgeSettings> | null>(null)
-const fastGptSettingsRef = ref<InstanceType<typeof FastGptKnowledgeSettings> | null>(null)
-const nowledgeMemSettingsRef = ref<InstanceType<typeof NowledgeMemSettings> | null>(null)
 const builtinSettingsRef = ref<InstanceType<typeof BuiltinKnowledgeSettings> | null>(null)
 
 // 根据系统版本控制是否展示内置知识库
