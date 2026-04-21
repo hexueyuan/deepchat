@@ -50,159 +50,11 @@ function isMacOS(): boolean {
   return process.platform === 'darwin'
 }
 
-function isWindows(): boolean {
-  return process.platform === 'win32'
-}
-
-function isLinux(): boolean {
-  return process.platform === 'linux'
-}
-
 // Platform-specific MCP server configurations
-const PLATFORM_SPECIFIC_SERVERS: Record<string, Omit<MCPServerConfig, 'enabled'>> = {
-  // macOS specific services
-  ...(isMacOS()
-    ? {
-        'deepchat/apple-server': {
-          args: [],
-          descriptions: 'DeepChat内置Apple系统集成服务 (仅macOS)',
-          icons: '🍎',
-          autoApprove: ['all'],
-          type: 'inmemory' as MCPServerType,
-          command: 'deepchat/apple-server',
-          env: {},
-          disable: false
-        }
-      }
-    : {}),
-
-  // Windows specific services (reserved)
-  ...(isWindows()
-    ? {
-        // 'deepchat-inmemory/windows-server': {
-        //   args: [],
-        //   descriptions: 'DeepChat built-in Windows system integration service (Windows only)',
-        //   icons: '🪟',
-        //   autoApprove: ['all'],
-        //   type: 'inmemory' as MCPServerType,
-        //   command: 'deepchat-inmemory/windows-server',
-        //   env: {},
-        //   disable: false
-        // }
-      }
-    : {}),
-
-  // Linux specific services (reserved)
-  ...(isLinux()
-    ? {
-        // 'deepchat-inmemory/linux-server': {
-        //   args: [],
-        //   descriptions: 'DeepChat built-in Linux system integration service (Linux only)',
-        //   icons: '🐧',
-        //   autoApprove: ['all'],
-        //   type: 'inmemory' as MCPServerType,
-        //   command: 'deepchat-inmemory/linux-server',
-        //   env: {},
-        //   disable: false
-        // }
-      }
-    : {})
-}
+const PLATFORM_SPECIFIC_SERVERS: Record<string, Omit<MCPServerConfig, 'enabled'>> = {}
 
 // Extract inmemory type services as constants
 const DEFAULT_INMEMORY_SERVERS: Record<string, Omit<MCPServerConfig, 'enabled'>> = {
-  // buildInFileSystem has been removed - filesystem capabilities are now provided via Agent tools
-  Artifacts: {
-    args: [],
-    descriptions: 'DeepChat内置 artifacts mcp服务',
-    icons: '🎨',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'artifacts',
-    env: {},
-    disable: false
-  },
-  bochaSearch: {
-    args: [],
-    descriptions: 'DeepChat内置博查搜索服务',
-    icons: '🔍',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'bochaSearch',
-    env: {
-      apiKey: 'YOUR_BOCHA_API_KEY' // User needs to provide actual API Key
-    },
-    disable: false
-  },
-  braveSearch: {
-    args: [],
-    descriptions: 'DeepChat内置Brave搜索服务',
-    icons: '🦁',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'braveSearch',
-    env: {
-      apiKey: 'YOUR_BRAVE_API_KEY' // User needs to provide actual API Key
-    },
-    disable: false
-  },
-  difyKnowledge: {
-    args: [],
-    descriptions: 'DeepChat内置Dify知识库检索服务',
-    icons: '📚',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'difyKnowledge',
-    env: {
-      configs: [
-        {
-          description: 'this is a description for the current knowledge base',
-          apiKey: 'YOUR_DIFY_API_KEY',
-          datasetId: 'YOUR_DATASET_ID',
-          endpoint: 'http://localhost:3000/v1'
-        }
-      ]
-    },
-    disable: false
-  },
-  ragflowKnowledge: {
-    args: [],
-    descriptions: 'DeepChat内置RAGFlow知识库检索服务',
-    icons: '📚',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'ragflowKnowledge',
-    env: {
-      configs: [
-        {
-          description: '默认RAGFlow知识库',
-          apiKey: 'YOUR_RAGFLOW_API_KEY',
-          datasetIds: ['YOUR_DATASET_ID'],
-          endpoint: 'http://localhost:8000'
-        }
-      ]
-    },
-    disable: false
-  },
-  fastGptKnowledge: {
-    args: [],
-    descriptions: 'DeepChat内置FastGPT知识库检索服务',
-    icons: '📚',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'fastGptKnowledge',
-    env: {
-      configs: [
-        {
-          description: 'this is a description for the current knowledge base',
-          apiKey: 'YOUR_FastGPT_API_KEY',
-          datasetId: 'YOUR_DATASET_ID',
-          endpoint: 'http://localhost:3000/api'
-        }
-      ]
-    },
-    disable: false
-  },
   builtinKnowledge: {
     args: [],
     descriptions: 'DeepChat内置知识库检索服务',
@@ -214,67 +66,16 @@ const DEFAULT_INMEMORY_SERVERS: Record<string, Omit<MCPServerConfig, 'enabled'>>
       configs: []
     },
     disable: false
-  },
-  'deepchat-inmemory/deep-research-server': {
-    args: [],
-    descriptions:
-      'DeepChat内置深度研究服务，使用博查搜索(注意该服务需要较长的上下文模型，请勿在短上下文的模型中使用)',
-    icons: '🔬',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'deepchat-inmemory/deep-research-server',
-    env: {
-      BOCHA_API_KEY: 'YOUR_BOCHA_API_KEY'
-    },
-    disable: false
-  },
-  'deepchat-inmemory/auto-prompting-server': {
-    args: [],
-    descriptions: 'DeepChat内置自动模板提示词服务',
-    icons: '📜',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'deepchat-inmemory/auto-prompting-server',
-    env: {},
-    disable: false
-  },
-  'deepchat-inmemory/conversation-search-server': {
-    args: [],
-    descriptions: 'DeepChat built-in conversation history search service',
-    icons: '🔍',
-    autoApprove: ['all'],
-    type: 'inmemory' as MCPServerType,
-    command: 'deepchat-inmemory/conversation-search-server',
-    env: {},
-    disable: false
-  },
-  // Merge platform-specific services
-  ...PLATFORM_SPECIFIC_SERVERS
+  }
 }
 
-const DEFAULT_ENABLED_SERVER_NAMES = ['Artifacts', ...(isMacOS() ? ['deepchat/apple-server'] : [])]
+const DEFAULT_ENABLED_SERVER_NAMES: string[] = []
 
 const DEFAULT_MCP_SERVERS = {
   mcpServers: {
-    // First define built-in MCP servers
-    ...DEFAULT_INMEMORY_SERVERS,
-    // Then default third-party MCP servers
-    'nowledge-mem': {
-      command: '',
-      args: [],
-      env: {},
-      descriptions: 'Nowledge Mem MCP',
-      icons: '🧠',
-      autoApprove: ['all'],
-      disable: true,
-      type: 'http' as MCPServerType,
-      baseUrl: 'http://localhost:14242/mcp',
-      customHeaders: {
-        APP: 'DeepChat'
-      }
-    }
+    ...DEFAULT_INMEMORY_SERVERS
   } satisfies Record<string, Omit<MCPServerConfig, 'enabled'>>,
-  mcpEnabled: false // MCP functionality is disabled by default
+  mcpEnabled: false
 }
 const BUILT_IN_SERVER_NAMES = new Set<string>(Object.keys(DEFAULT_MCP_SERVERS.mcpServers))
 // This part of MCP has system logic to determine whether to enable, not controlled by user configuration, but by software environment
