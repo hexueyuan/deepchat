@@ -29,7 +29,6 @@ import {
   VERTEX_PROVIDER
 } from '@shared/presenter'
 import { BedrockClient, ListFoundationModelsCommand } from '@aws-sdk/client-bedrock'
-import { ProxyAgent } from 'undici'
 import { BaseLLMProvider, SUMMARY_TITLES_PROMPT } from '../baseProvider'
 import {
   runAiSdkCoreStream,
@@ -40,7 +39,6 @@ import {
 } from '../aiSdk'
 import type { AiSdkProviderKind } from '../aiSdk/providerFactory'
 import { normalizeAzureBaseUrl } from '../aiSdk/providerFactory'
-import { proxyConfig } from '../../proxyConfig'
 import type { ProviderMcpRuntimePort } from '../runtimePorts'
 import {
   type AiSdkBehaviorPreset,
@@ -412,9 +410,11 @@ export class AiSdkProvider extends BaseLLMProvider {
     return this.getModelFetchTimeout()
   }
 
-  private getFetchDispatcher(): ProxyAgent | undefined {
-    const proxyUrl = proxyConfig.getProxyUrl()
-    return proxyUrl ? new ProxyAgent(proxyUrl) : undefined
+  private getFetchDispatcher(): undefined {
+    // Use the global dispatcher (configured by proxyConfig with noProxy support).
+    // Previously, creating a ProxyAgent per-request bypassed the global noProxy
+    // settings, causing requests to localhost/127.0.0.1 to fail through the proxy.
+    return undefined
   }
 
   private isAzureOpenAI(decision: RouteDecision, runtimeProvider: LLM_PROVIDER): boolean {
@@ -598,13 +598,24 @@ export class AiSdkProvider extends BaseLLMProvider {
   ): Promise<Array<Record<string, unknown>>> {
     const resolvedDecision = decision ?? { providerKind: this.definition.runtimeKind }
     const runtimeProvider = this.getRuntimeProvider(resolvedDecision)
-    const payload = await this.requestProviderJson<unknown>(
-      this.buildModelsUrl(resolvedDecision, runtimeProvider),
-      { method: 'GET' },
-      options?.timeout,
-      resolvedDecision
+    const modelsUrl = this.buildModelsUrl(resolvedDecision, runtimeProvider)
+    console.log(
+      `[AiSdkProvider] fetchOpenAIModelRecords: url="${modelsUrl}" provider="${this.provider.id}" custom=${this.provider.custom} apiKey=${runtimeProvider.apiKey ? '***' : 'EMPTY'}`
     )
-    return toModelRecordArray(payload)
+    try {
+      const payload = await this.requestProviderJson<unknown>(
+        modelsUrl,
+        { method: 'GET' },
+        options?.timeout,
+        resolvedDecision
+      )
+      const records = toModelRecordArray(payload)
+      console.log(`[AiSdkProvider] fetchOpenAIModelRecords: got ${records.length} model records`)
+      return records
+    } catch (err: any) {
+      console.error(`[AiSdkProvider] fetchOpenAIModelRecords FAILED:`, err?.message ?? err)
+      throw err
+    }
   }
 
   public async fetchDefaultOpenAIModels(
@@ -908,6 +919,9 @@ export class AiSdkProvider extends BaseLLMProvider {
   private async fetchProviderModelsByStrategy(
     strategy: AiSdkModelSourceStrategy
   ): Promise<MODEL_META[]> {
+    console.log(
+      `[AiSdkProvider] fetchProviderModelsByStrategy: provider="${this.provider.id}" custom=${this.provider.custom} strategy="${strategy}"`
+    )
     switch (strategy) {
       case 'config-db': {
         // Custom providers should always try to fetch models from the API

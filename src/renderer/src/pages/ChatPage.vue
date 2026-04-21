@@ -5,98 +5,100 @@
       class="message-list-container h-full w-full min-w-0 overflow-y-auto"
       @scroll="onScroll"
     >
-      <ChatTopBar
-        class="chat-capture-hide"
-        :session-id="props.sessionId"
-        :title="sessionTitle"
-        :project="sessionProject"
-        :is-read-only="isReadOnlySession"
-        :is-temporary="isTemporarySession"
-      />
-      <div v-if="isChatSearchOpen" class="pointer-events-none sticky top-14 z-20 px-6">
-        <div class="mx-auto flex w-full max-w-5xl justify-end">
-          <ChatSearchBar
-            ref="chatSearchBarRef"
-            v-model="chatSearchQuery"
-            class="pointer-events-auto"
-            :active-match="activeChatSearchIndex"
-            :total-matches="chatSearchMatches.length"
-            @previous="goToPreviousChatSearchMatch"
-            @next="goToNextChatSearchMatch"
-            @close="closeChatSearch"
+      <div class="flex min-h-full flex-col">
+        <ChatTopBar
+          class="chat-capture-hide"
+          :session-id="props.sessionId"
+          :title="sessionTitle"
+          :project="sessionProject"
+          :is-read-only="isReadOnlySession"
+          :is-temporary="isTemporarySession"
+        />
+        <div v-if="isChatSearchOpen" class="pointer-events-none sticky top-14 z-20 px-6">
+          <div class="mx-auto flex w-full max-w-5xl justify-end">
+            <ChatSearchBar
+              ref="chatSearchBarRef"
+              v-model="chatSearchQuery"
+              class="pointer-events-auto"
+              :active-match="activeChatSearchIndex"
+              :total-matches="chatSearchMatches.length"
+              @previous="goToPreviousChatSearchMatch"
+              @next="goToNextChatSearchMatch"
+              @close="closeChatSearch"
+            />
+          </div>
+        </div>
+        <div ref="messageSearchRoot" class="flex-1">
+          <MessageList
+            :messages="displayMessages"
+            :conversation-id="props.sessionId"
+            :ephemeral-rate-limit-block="ephemeralRateLimitBlock"
+            :ephemeral-rate-limit-message-id="ephemeralRateLimitMessageId"
+            :is-generating="isGenerating"
+            :trace-message-ids="traceMessageIds"
+            :is-read-only="isReadOnlySession"
+            @retry="onMessageRetry"
+            @delete="onMessageDelete"
+            @fork="onMessageFork"
+            @continue="onMessageContinue"
+            @trace="onMessageTrace"
+            @edit-save="onMessageEditSave"
           />
         </div>
-      </div>
-      <div ref="messageSearchRoot">
-        <MessageList
-          :messages="displayMessages"
-          :conversation-id="props.sessionId"
-          :ephemeral-rate-limit-block="ephemeralRateLimitBlock"
-          :ephemeral-rate-limit-message-id="ephemeralRateLimitMessageId"
-          :is-generating="isGenerating"
-          :trace-message-ids="traceMessageIds"
-          :is-read-only="isReadOnlySession"
-          @retry="onMessageRetry"
-          @delete="onMessageDelete"
-          @fork="onMessageFork"
-          @continue="onMessageContinue"
-          @trace="onMessageTrace"
-          @edit-save="onMessageEditSave"
-        />
-      </div>
-      <TraceDialog :message-id="traceMessageId" @close="traceMessageId = null" />
+        <TraceDialog :message-id="traceMessageId" @close="traceMessageId = null" />
 
-      <!-- Input area (sticky bottom, messages scroll under) -->
-      <div
-        v-if="!isReadOnlySession"
-        class="chat-capture-hide sticky bottom-0 z-10 w-full px-6 pb-3 pt-3"
-      >
-        <div class="mx-auto flex w-full max-w-5xl min-w-0 flex-col items-center">
-          <ChatToolInteractionOverlay
-            v-if="activePendingInteraction"
-            :interaction="activePendingInteraction"
-            :processing="isHandlingInteraction"
-            @respond="onToolInteractionRespond"
-          />
-          <PendingInputLane
-            :steer-items="pendingInputStore.steerItems"
-            :queue-items="pendingInputStore.queueItems"
-            :disable-steer-action="pendingInputStore.isAtCapacity"
-            :show-resume-queue="showResumePendingQueue"
-            class="mb-1.5"
-            @update-queue="onPendingInputUpdate"
-            @move-queue="onPendingInputMove"
-            @convert-queue-to-steer="onPendingInputConvert"
-            @delete-queue="onPendingInputDelete"
-            @resume-queue="onResumePendingQueue"
-          />
-          <template v-if="!activePendingInteraction">
-            <ChatInputBox
-              ref="chatInputRef"
-              v-model="message"
-              max-width-class="max-w-4xl"
-              :files="attachedFiles"
-              :session-id="props.sessionId"
-              :workspace-path="sessionStore.activeSession?.projectDir ?? null"
-              :is-acp-session="sessionStore.activeSession?.providerId === 'acp'"
-              :submit-disabled="isInputSubmitDisabled"
-              @update:files="onFilesChange"
-              @command-submit="onCommandSubmit"
-              @submit="onSubmit"
-            >
-              <template #toolbar>
-                <ChatInputToolbar
-                  :is-generating="isGenerating"
-                  :has-input="hasDraftInput"
-                  :send-disabled="isQueueSubmitDisabled"
-                  @attach="onAttach"
-                  @send="onSubmit"
-                  @stop="onStop"
-                />
-              </template>
-            </ChatInputBox>
-            <ChatStatusBar max-width-class="max-w-4xl" />
-          </template>
+        <!-- Input area (sticky bottom, messages scroll under) -->
+        <div
+          v-if="!isReadOnlySession"
+          class="chat-capture-hide sticky bottom-0 z-10 w-full px-6 pb-3 pt-3"
+        >
+          <div class="mx-auto flex w-full max-w-5xl min-w-0 flex-col items-center">
+            <ChatToolInteractionOverlay
+              v-if="activePendingInteraction"
+              :interaction="activePendingInteraction"
+              :processing="isHandlingInteraction"
+              @respond="onToolInteractionRespond"
+            />
+            <PendingInputLane
+              :steer-items="pendingInputStore.steerItems"
+              :queue-items="pendingInputStore.queueItems"
+              :disable-steer-action="pendingInputStore.isAtCapacity"
+              :show-resume-queue="showResumePendingQueue"
+              class="mb-1.5"
+              @update-queue="onPendingInputUpdate"
+              @move-queue="onPendingInputMove"
+              @convert-queue-to-steer="onPendingInputConvert"
+              @delete-queue="onPendingInputDelete"
+              @resume-queue="onResumePendingQueue"
+            />
+            <template v-if="!activePendingInteraction">
+              <ChatInputBox
+                ref="chatInputRef"
+                v-model="message"
+                max-width-class="max-w-4xl"
+                :files="attachedFiles"
+                :session-id="props.sessionId"
+                :workspace-path="sessionStore.activeSession?.projectDir ?? null"
+                :is-acp-session="sessionStore.activeSession?.providerId === 'acp'"
+                :submit-disabled="isInputSubmitDisabled"
+                @update:files="onFilesChange"
+                @command-submit="onCommandSubmit"
+                @submit="onSubmit"
+              >
+                <template #toolbar>
+                  <ChatInputToolbar
+                    :is-generating="isGenerating"
+                    :has-input="hasDraftInput"
+                    :send-disabled="isQueueSubmitDisabled"
+                    @attach="onAttach"
+                    @send="onSubmit"
+                    @stop="onStop"
+                  />
+                </template>
+              </ChatInputBox>
+              <ChatStatusBar max-width-class="max-w-4xl" />
+            </template>
+          </div>
         </div>
       </div>
     </div>
