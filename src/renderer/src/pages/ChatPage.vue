@@ -15,7 +15,7 @@
           :is-temporary="isTemporarySession"
         />
         <div v-if="isChatSearchOpen" class="pointer-events-none sticky top-14 z-20 px-6">
-          <div class="mx-auto flex w-full max-w-5xl justify-end">
+          <div :class="['mx-auto flex w-full justify-end', contentMaxWidthClass]">
             <ChatSearchBar
               ref="chatSearchBarRef"
               v-model="chatSearchQuery"
@@ -52,7 +52,7 @@
           v-if="!isReadOnlySession"
           class="chat-capture-hide sticky bottom-0 z-10 w-full px-6 pb-3 pt-3"
         >
-          <div class="mx-auto flex w-full max-w-5xl min-w-0 flex-col items-center">
+          <div :class="['mx-auto flex w-full min-w-0 flex-col items-center', contentMaxWidthClass]">
             <ChatToolInteractionOverlay
               v-if="activePendingInteraction"
               :interaction="activePendingInteraction"
@@ -75,7 +75,7 @@
               <ChatInputBox
                 ref="chatInputRef"
                 v-model="message"
-                max-width-class="max-w-4xl"
+                :max-width-class="inputMaxWidthClass"
                 :files="attachedFiles"
                 :session-id="props.sessionId"
                 :workspace-path="sessionStore.activeSession?.projectDir ?? null"
@@ -96,7 +96,7 @@
                   />
                 </template>
               </ChatInputBox>
-              <ChatStatusBar max-width-class="max-w-4xl" />
+              <ChatStatusBar :max-width-class="inputMaxWidthClass" />
             </template>
           </div>
         </div>
@@ -124,6 +124,7 @@ import ChatStatusBar from '@/components/chat/ChatStatusBar.vue'
 import ChatToolInteractionOverlay from '@/components/chat/ChatToolInteractionOverlay.vue'
 import TraceDialog from '@/components/trace/TraceDialog.vue'
 import { useSessionStore } from '@/stores/ui/session'
+import { useSidepanelStore } from '@/stores/ui/sidepanel'
 import { useMessageStore } from '@/stores/ui/message'
 import { usePendingInputStore } from '@/stores/ui/pendingInput'
 import { useSpotlightStore } from '@/stores/ui/spotlight'
@@ -148,12 +149,16 @@ const props = defineProps<{
 }>()
 
 const sessionStore = useSessionStore()
+const sidepanelStore = useSidepanelStore()
 const messageStore = useMessageStore()
 const pendingInputStore = usePendingInputStore()
 const spotlightStore = useSpotlightStore()
 const modelStore = useModelStore()
 const agentSessionPresenter = usePresenter('agentSessionPresenter')
 const { t } = useI18n()
+
+const contentMaxWidthClass = computed(() => (sidepanelStore.open ? '' : 'max-w-5xl'))
+const inputMaxWidthClass = computed(() => (sidepanelStore.open ? '' : 'max-w-4xl'))
 
 const sessionTitle = computed(() => sessionStore.activeSession?.title ?? t('common.newChat'))
 const sessionProject = computed(() => sessionStore.activeSession?.projectDir ?? '')
