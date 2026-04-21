@@ -354,5 +354,13 @@
     "previous": "Previous match",
     "next": "Next match",
     "close": "Close search"
+  },
+  "generatingPhase": {
+    "preparing": "Preparing...",
+    "thinking": "Thinking...",
+    "toolCalling": "Calling tools...",
+    "searching": "Searching...",
+    "generating": "Generating...",
+    "working": "Working..."
   }
 }

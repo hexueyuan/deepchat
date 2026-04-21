@@ -354,5 +354,13 @@
     "previous": "上一处匹配",
     "next": "下一处匹配",
     "close": "关闭搜索"
+  },
+  "generatingPhase": {
+    "preparing": "正在准备...",
+    "thinking": "正在思考...",
+    "toolCalling": "正在执行工具...",
+    "searching": "正在搜索...",
+    "generating": "正在生成...",
+    "working": "正在工作..."
   }
 }
