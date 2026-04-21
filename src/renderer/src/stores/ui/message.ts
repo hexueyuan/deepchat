@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed, onScopeDispose, getCurrentScope } from 'vue'
 import { usePresenter } from '@/composables/usePresenter'
 import type {
@@ -31,6 +31,8 @@ type ParsedMessageCacheEntry = {
 export const useMessageStore = defineStore('message', () => {
   const agentSessionPresenter = usePresenter('agentSessionPresenter')
   const streamStateStore = useStreamStateStore()
+  const { isStreaming, streamingBlocks, currentStreamMessageId, streamRevision } =
+    storeToRefs(streamStateStore)
 
   // --- State ---
   const messageIds = ref<string[]>([])
@@ -295,10 +297,10 @@ export const useMessageStore = defineStore('message', () => {
   return {
     messageIds,
     messageCache,
-    isStreaming: streamStateStore.isStreaming,
-    streamingBlocks: streamStateStore.streamingBlocks,
-    currentStreamMessageId: streamStateStore.currentStreamMessageId,
-    streamRevision: streamStateStore.streamRevision,
+    isStreaming,
+    streamingBlocks,
+    currentStreamMessageId,
+    streamRevision,
     lastPersistedRevision,
     messages,
     getAssistantMessageBlocks,

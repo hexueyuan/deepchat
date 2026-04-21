@@ -164,6 +164,9 @@ const setup = async (options: SetupOptions = {}) => {
   vi.doMock('@/stores/ui/spotlight', () => ({
     useSpotlightStore: () => spotlightStore
   }))
+  vi.doMock('@/stores/uiSettingsStore', () => ({
+    useUiSettingsStore: () => reactive({ autoScrollEnabled: true })
+  }))
   vi.doMock('vue-i18n', () => ({
     useI18n: () => ({
       t: (key: string) => key,

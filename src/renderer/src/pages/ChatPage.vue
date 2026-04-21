@@ -126,6 +126,7 @@ import { useMessageStore } from '@/stores/ui/message'
 import { usePendingInputStore } from '@/stores/ui/pendingInput'
 import { useSpotlightStore } from '@/stores/ui/spotlight'
 import { useModelStore } from '@/stores/modelStore'
+import { useUiSettingsStore } from '@/stores/uiSettingsStore'
 import { usePresenter } from '@/composables/usePresenter'
 import {
   applyChatSearchHighlights,
@@ -150,6 +151,7 @@ const messageStore = useMessageStore()
 const pendingInputStore = usePendingInputStore()
 const spotlightStore = useSpotlightStore()
 const modelStore = useModelStore()
+const uiSettingsStore = useUiSettingsStore()
 const agentSessionPresenter = usePresenter('agentSessionPresenter')
 const { t } = useI18n()
 
@@ -509,8 +511,10 @@ watch(
       return
     }
 
-    if (isNearBottom.value) {
-      scrollToBottom()
+    const isStreaming = !!messageStore.currentStreamMessageId
+    const streamAutoScroll = uiSettingsStore.autoScrollEnabled && isStreaming
+    if (isNearBottom.value || streamAutoScroll) {
+      scrollToBottom(streamAutoScroll)
     }
   },
   { flush: 'post' }
