@@ -186,16 +186,6 @@ const handleViewResources = async (serverName: string) => {
   isResourceViewerOpen.value = true
 }
 
-const openMarketView = async () => {
-  await router.push({
-    name: 'settings-mcp',
-    query: {
-      ...router.currentRoute.value.query,
-      view: 'market'
-    }
-  })
-}
-
 const openHigressMarket = () => {
   window.open(HIGRESS_MCP_MARKETPLACE_URL, '_blank')
 }
@@ -326,9 +316,6 @@ const openHigressMarket = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem class="text-xs" @click="openMarketView">
-                {{ t('routes.settings-mcp-market') }}
-              </DropdownMenuItem>
               <DropdownMenuItem class="text-xs" @click="openHigressMarket">
                 {{ t('settings.mcp.marketMenu.higress') }}
               </DropdownMenuItem>

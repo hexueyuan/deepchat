@@ -54,9 +54,6 @@
 
         <Separator />
 
-        <!-- ModelScope MCP 同步 -->
-        <ModelScopeMcpSync v-if="provider.id === 'modelscope'" :provider="provider" />
-
         <!-- 模型管理 -->
         <ProviderModelManager
           :provider="provider"
@@ -100,7 +97,6 @@ import AzureProviderConfig from './AzureProviderConfig.vue'
 import GeminiSafetyConfig from './GeminiSafetyConfig.vue'
 import VertexProviderSettingsDetail from './VertexProviderSettingsDetail.vue'
 import ProviderRateLimitConfig from './ProviderRateLimitConfig.vue'
-import ModelScopeMcpSync from './ModelScopeMcpSync.vue'
 import ProviderModelManager from './ProviderModelManager.vue'
 import ProviderDialogContainer from './ProviderDialogContainer.vue'
 import { useModelCheckStore } from '@/stores/modelCheck'
