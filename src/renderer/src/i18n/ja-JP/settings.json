@@ -1198,6 +1198,8 @@
     "env": "環境変数",
     "envKeyPlaceholder": "キー",
     "envValuePlaceholder": "価値",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "missingFieldsDesc": "保存する前に名前とコマンドを入力してください。",
     "missingFieldsTitle": "名称とコマンドは必須項目です。",
     "saveFailed": "エージェントの保存に失敗しました",

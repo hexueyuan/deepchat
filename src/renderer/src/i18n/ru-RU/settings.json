@@ -1198,6 +1198,8 @@
     "env": "Переменная окружения",
     "envKeyPlaceholder": "КЛЮЧ",
     "envValuePlaceholder": "ЗНАЧЕНИЕ",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "missingFieldsDesc": "Перед сохранением заполните название и команду.",
     "missingFieldsTitle": "Название и команда являются обязательными",
     "saveFailed": "Сбой сохранения агента",

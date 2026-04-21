@@ -26,6 +26,7 @@ type StoredAcpManualConfig = {
   command: string
   args?: string[]
   env?: Record<string, string>
+  selfManagedCompaction?: boolean
 }
 
 type StoredAcpRegistryConfig = {
@@ -241,7 +242,8 @@ export class AgentRepository {
       configJson: stringifyJson({
         command: agent.command,
         args: agent.args,
-        env: agent.env
+        env: agent.env,
+        selfManagedCompaction: agent.selfManagedCompaction
       } satisfies StoredAcpManualConfig),
       stateJson: stringifyJson({})
     })
@@ -261,7 +263,11 @@ export class AgentRepository {
     const nextConfig: StoredAcpManualConfig = {
       command: updates.command?.trim() || currentConfig.command,
       args: updates.args ?? currentConfig.args,
-      env: updates.env ?? currentConfig.env
+      env: updates.env ?? currentConfig.env,
+      selfManagedCompaction:
+        updates.selfManagedCompaction !== undefined
+          ? updates.selfManagedCompaction || undefined
+          : currentConfig.selfManagedCompaction
     }
 
     this.sqlitePresenter.agentsTable.update(agentId, {
@@ -477,7 +483,8 @@ export class AgentRepository {
       enabled: row.enabled === 1,
       description: row.description ?? undefined,
       icon: row.icon ?? undefined,
-      source: 'manual'
+      source: 'manual',
+      selfManagedCompaction: config.selfManagedCompaction
     }
   }
 

@@ -1198,6 +1198,8 @@
     "addEnv": "הוסף משתנה",
     "envKeyPlaceholder": "מפתח (KEY)",
     "envValuePlaceholder": "ערך (VALUE)",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "profileDialog": {
       "addBuiltinTitle": "הוסף פרופיל {name}",
       "editBuiltinTitle": "ערוך פרופיל {name}",

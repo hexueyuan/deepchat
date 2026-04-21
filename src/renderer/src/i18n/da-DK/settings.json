@@ -1131,6 +1131,8 @@
     "addEnv": "Tilføj variabel",
     "envKeyPlaceholder": "NØGLE",
     "envValuePlaceholder": "VÆRDI",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "profileDialog": {
       "addBuiltinTitle": "Tilføj {name}-profil",
       "editBuiltinTitle": "Rediger {name}-profil",

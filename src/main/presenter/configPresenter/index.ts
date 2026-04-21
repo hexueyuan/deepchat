@@ -2115,7 +2115,8 @@ export class ConfigPresenter implements IConfigPresenter {
       description: agent.description,
       icon: agent.icon,
       source: 'registry',
-      installState: agent.installState ?? null
+      installState: agent.installState ?? null,
+      selfManagedCompaction: agent.selfManagedCompaction
     }
   }
 
@@ -2129,7 +2130,8 @@ export class ConfigPresenter implements IConfigPresenter {
       description: agent.description,
       icon: agent.icon,
       source: 'manual',
-      installState: null
+      installState: null,
+      selfManagedCompaction: agent.selfManagedCompaction
     }
   }
 

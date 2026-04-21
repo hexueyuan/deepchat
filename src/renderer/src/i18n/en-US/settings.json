@@ -1287,6 +1287,8 @@
     "addEnv": "Add Variable",
     "envKeyPlaceholder": "KEY",
     "envValuePlaceholder": "VALUE",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "profileDialog": {
       "addBuiltinTitle": "Add {name} Profile",
       "editBuiltinTitle": "Edit {name} Profile",

@@ -961,6 +961,7 @@ export interface AcpAgentConfig {
   icon?: string
   source?: AcpAgentSource
   installState?: AcpAgentInstallState | null
+  selfManagedCompaction?: boolean
 }
 
 export interface AcpRegistryBinaryDistribution {
@@ -1019,6 +1020,7 @@ export interface AcpRegistryAgent {
   enabled: boolean
   envOverride?: Record<string, string>
   installState?: AcpAgentInstallState | null
+  selfManagedCompaction?: boolean
 }
 
 export interface AcpManualAgent {
@@ -1031,6 +1033,7 @@ export interface AcpManualAgent {
   description?: string
   icon?: string
   source: 'manual'
+  selfManagedCompaction?: boolean
 }
 
 export interface AcpResolvedLaunchSpec {

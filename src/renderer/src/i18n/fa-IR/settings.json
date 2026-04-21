@@ -1198,6 +1198,8 @@
     "env": "متغیر محیطی",
     "envKeyPlaceholder": "کلید",
     "envValuePlaceholder": "مقدار",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "missingFieldsDesc": "لطفاً قبل از ذخیره کردن، نام و دستور را پر کنید.",
     "missingFieldsTitle": "نام و دستور اجباری هستند",
     "saveFailed": "ذخیره عامل ناموفق بود",

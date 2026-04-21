@@ -162,7 +162,9 @@ const normalizeAgent = (value: unknown): AcpRegistryAgent | null => {
     source: 'registry',
     enabled: false,
     envOverride: undefined,
-    installState: null
+    installState: null,
+    selfManagedCompaction:
+      typeof record.selfManagedCompaction === 'boolean' ? record.selfManagedCompaction : undefined
   }
 }
 

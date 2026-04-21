@@ -1198,6 +1198,8 @@
     "env": "환경 변수",
     "envKeyPlaceholder": "열쇠",
     "envValuePlaceholder": "값",
+    "selfManagedCompaction": "Self-managed Compaction",
+    "selfManagedCompactionHint": "This agent manages its own context compaction internally, skipping DeepChat's built-in auto-compaction.",
     "missingFieldsDesc": "저장하기 전에 이름과 명령을 입력하세요.",
     "missingFieldsTitle": "이름과 명령이 필요합니다",
     "saveFailed": "프록시를 저장하지 못했습니다.",

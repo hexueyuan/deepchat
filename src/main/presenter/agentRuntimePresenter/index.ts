@@ -211,6 +211,14 @@ export class AgentRuntimePresenter implements IAgentImplementation {
       this.configPresenter,
       async (sessionId) => {
         const agentId = this.getSessionAgentId(sessionId) ?? 'deepchat'
+
+        // ACP agents with selfManagedCompaction skip DeepChat's compaction
+        const acpAgents = await this.configPresenter.getAcpAgents()
+        const acpAgent = acpAgents.find((a) => a.id === agentId)
+        if (acpAgent?.selfManagedCompaction) {
+          return { autoCompactionEnabled: false }
+        }
+
         if (typeof this.configPresenter.resolveDeepChatAgentConfig !== 'function') {
           return {}
         }

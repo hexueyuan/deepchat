@@ -1306,6 +1306,8 @@
     "addEnv": "添加变量",
     "envKeyPlaceholder": "KEY",
     "envValuePlaceholder": "VALUE",
+    "selfManagedCompaction": "自主管理上下文压缩",
+    "selfManagedCompactionHint": "该 Agent 自行管理对话上下文压缩，跳过 DeepChat 内置的自动压缩。",
     "profileDialog": {
       "addBuiltinTitle": "新增 {name} 配置",
       "editBuiltinTitle": "编辑 {name} 配置",

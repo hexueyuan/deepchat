@@ -156,6 +156,14 @@
                     <span class="font-semibold">{{ t('settings.acp.command') }}:</span>
                     <span class="truncate">{{ buildPreviewCommand(agent) }}</span>
                   </div>
+                  <div v-if="agent.selfManagedCompaction" class="flex items-start gap-1">
+                    <span class="font-semibold"
+                      >{{ t('settings.acp.selfManagedCompaction') }}:</span
+                    >
+                    <Badge variant="secondary" class="text-[10px] px-1 py-0">
+                      {{ t('common.enabled') }}
+                    </Badge>
+                  </div>
                 </div>
 
                 <div class="space-y-2">
@@ -351,6 +359,15 @@
           <div class="flex items-center justify-between rounded-md border px-3 py-2">
             <div class="text-sm text-muted-foreground">{{ t('common.enabled') }}</div>
             <Switch v-model="manualDialog.enabled" />
+          </div>
+          <div class="flex items-center justify-between rounded-md border px-3 py-2">
+            <div>
+              <div class="text-sm">{{ t('settings.acp.selfManagedCompaction') }}</div>
+              <div class="text-xs text-muted-foreground">
+                {{ t('settings.acp.selfManagedCompactionHint') }}
+              </div>
+            </div>
+            <Switch v-model="manualDialog.selfManagedCompaction" />
           </div>
         </div>
 
@@ -650,7 +667,8 @@ const manualDialog = reactive({
   command: '',
   args: [] as string[],
   env: '',
-  enabled: true
+  enabled: true,
+  selfManagedCompaction: false
 })
 
 const registryDialog = reactive({
@@ -972,6 +990,7 @@ const openManualDialog = (agent?: AcpManualAgent) => {
   manualDialog.args = [...(agent?.args ?? [])]
   manualDialog.env = stringifyEnvBlock(agent?.env)
   manualDialog.enabled = agent?.enabled ?? true
+  manualDialog.selfManagedCompaction = agent?.selfManagedCompaction ?? false
   manualDialog.open = true
 }
 
@@ -992,7 +1011,8 @@ const saveManualAgent = async () => {
       command: manualDialog.command.trim(),
       args: manualDialog.args.length ? [...manualDialog.args] : undefined,
       env: parseEnvBlock(manualDialog.env),
-      enabled: manualDialog.enabled
+      enabled: manualDialog.enabled,
+      selfManagedCompaction: manualDialog.selfManagedCompaction || undefined
     }
 
     if (manualDialog.agentId) {
