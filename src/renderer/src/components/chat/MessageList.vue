@@ -68,6 +68,7 @@ import MessageItemAssistant from '@/components/message/MessageItemAssistant.vue'
 import MessageBlockAction from '@/components/message/MessageBlockAction.vue'
 import MessageItemUser from '@/components/message/MessageItemUser.vue'
 import { useMessageCapture } from '@/composables/message/useMessageCapture'
+import GeneratingIndicator from '@/components/chat/GeneratingIndicator.vue'
 import {
   type DisplayAssistantMessage,
   type DisplayAssistantMessageBlock,
