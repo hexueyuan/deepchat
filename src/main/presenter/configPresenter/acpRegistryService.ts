@@ -277,7 +277,7 @@ export class AcpRegistryService {
 
     this.manifest = this.loadFromCache() ?? this.loadFromBuiltIn()
     if (!this.manifest) {
-      throw new Error('[ACP Registry] No registry snapshot is available.')
+      return { version: '', agents: [] }
     }
     return this.manifest
   }
