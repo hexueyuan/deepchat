@@ -26,6 +26,8 @@
       "Bash(tree:*)",
       "Bash(mvn:*)",
       "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
       "Bash(git *)",
       "Bash(tmux new-session *)",
       "Bash(tmux has-session *)",
@@ -51,6 +53,8 @@
       "Bash(git restore .)"
     ]
   },
-  "enabledPlugins": {},
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  },
   "extraKnownMarketplaces": {}
 }

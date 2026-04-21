@@ -374,5 +374,4 @@ const clearCustomNpmRegistry = async () => {
 onMounted(() => {
   loadNpmRegistryStatus()
 })
-
 </script>
