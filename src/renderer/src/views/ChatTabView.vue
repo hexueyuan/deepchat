@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full min-h-0 w-full flex-row overflow-hidden">
     <div
-      class="relative flex h-full min-h-0 min-w-0 transition-[flex] duration-200 ease-out"
+      class="dc-container-font relative flex h-full min-h-0 min-w-0 transition-[flex] duration-200 ease-out"
       style="container-type: inline-size"
       :style="{ flex: chatFlex }"
     >

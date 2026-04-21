@@ -6,7 +6,7 @@
     <aside
       v-if="props.sessionId"
       style="container-type: inline-size"
-      class="absolute inset-y-0 right-0 flex h-full min-h-0 w-full flex-col border-l bg-background shadow-lg transition-all duration-200 ease-out"
+      class="dc-container-font absolute inset-y-0 right-0 flex h-full min-h-0 w-full flex-col border-l bg-background shadow-lg transition-all duration-200 ease-out"
       :class="
         shouldShow
           ? 'translate-x-0 opacity-100'
