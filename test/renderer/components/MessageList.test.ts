@@ -64,6 +64,19 @@ vi.mock('@/components/message/MessageBlockAction.vue', () => ({
   })
 }))
 
+vi.mock('@/components/chat/GeneratingIndicator.vue', () => ({
+  default: defineComponent({
+    name: 'GeneratingIndicator',
+    props: {
+      text: {
+        type: String,
+        required: true
+      }
+    },
+    template: '<div class="generating-indicator-stub">{{ text }}</div>'
+  })
+}))
+
 vi.mock('@/composables/message/useMessageCapture', () => ({
   useMessageCapture: () => ({
     isCapturing: false,
@@ -202,5 +215,30 @@ describe('MessageList', () => {
     expect(wrapper.find('[data-rate-limit-indicator="true"]').exists()).toBe(true)
     expect(wrapper.find('.rate-limit-block-stub').text()).toBe('rate_limit')
     expect(wrapper.findAll('.assistant-item')).toHaveLength(0)
+  })
+
+  it('shows generating indicator when isGenerating and generatingPhaseText are set', () => {
+    const wrapper = mount(MessageList, {
+      props: {
+        messages: [createMessage('u1', 'user', 1)],
+        isGenerating: true,
+        generatingPhaseText: '正在思考...'
+      }
+    })
+
+    expect(wrapper.find('.generating-indicator-stub').exists()).toBe(true)
+    expect(wrapper.find('.generating-indicator-stub').text()).toBe('正在思考...')
+  })
+
+  it('hides generating indicator when not generating', () => {
+    const wrapper = mount(MessageList, {
+      props: {
+        messages: [createMessage('u1', 'user', 1)],
+        isGenerating: false,
+        generatingPhaseText: ''
+      }
+    })
+
+    expect(wrapper.find('.generating-indicator-stub').exists()).toBe(false)
   })
 })
