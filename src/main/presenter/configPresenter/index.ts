@@ -412,15 +412,8 @@ export class ConfigPresenter implements IConfigPresenter {
       path.join(this.userDataPath, 'acp-registry')
     )
     this.syncAcpProviderEnabled(this.acpConfHelper.getGlobalEnabled())
-    void this.acpRegistryService
-      .initialize()
-      .then(() => {
-        this.syncRegistryAgentsToRepository()
-        this.notifyAcpAgentsChanged()
-      })
-      .catch((error) => {
-        console.error('[ACP] Failed to initialize registry service:', error)
-      })
+    // Registry initialization disabled — bundled registry data removed.
+    // AcpRegistryService is preserved for future use.
 
     // Initialize model configuration helper
     this.modelConfigHelper = new ModelConfigHelper(this.currentAppVersion)

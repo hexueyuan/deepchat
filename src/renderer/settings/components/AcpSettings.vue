@@ -17,24 +17,6 @@
         />
       </div>
 
-      <div
-        v-if="acpEnabled"
-        class="rounded-xl border bg-muted/20 px-4 py-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
-      >
-        <div class="space-y-1">
-          <div class="text-sm font-semibold">{{ t('settings.acp.registryInstallEntry') }}</div>
-          <p class="text-xs text-muted-foreground">
-            {{ t('settings.acp.registryInstallEntryDescription') }}
-          </p>
-        </div>
-        <div class="flex items-center gap-2">
-          <Button variant="outline" @click="openRegistryDialog">
-            <Icon icon="lucide:download" class="h-4 w-4 mr-2" />
-            {{ t('settings.acp.registryInstallEntry') }}
-          </Button>
-        </div>
-      </div>
-
       <Separator />
     </div>
 
@@ -382,171 +364,6 @@
       </DialogContent>
     </Dialog>
 
-    <Dialog :open="registryDialog.open" @update:open="(value) => (registryDialog.open = value)">
-      <DialogContent hide-close class="sm:max-w-[760px] p-0 overflow-hidden">
-        <div class="flex flex-col max-h-[80vh]">
-          <DialogHeader class="px-5 pt-5 pb-4 border-b space-y-4 text-left">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-              <div class="space-y-1">
-                <DialogTitle>{{ t('settings.acp.registryInstallTitle') }}</DialogTitle>
-                <DialogDescription>
-                  {{ t('settings.acp.registryInstallDescription') }}
-                </DialogDescription>
-              </div>
-              <div class="flex items-center gap-2 self-end lg:self-start">
-                <Button as-child size="sm" variant="outline" class="hidden sm:inline-flex">
-                  <a
-                    href="https://agentclientprotocol.com/get-started/registry"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {{ t('settings.acp.registryLearnMore') }}
-                    <Icon icon="lucide:external-link" class="h-4 w-4 ml-2" />
-                  </a>
-                </Button>
-                <Button size="sm" variant="outline" :disabled="refreshing" @click="refreshRegistry">
-                  <Icon
-                    :icon="refreshing ? 'lucide:loader' : 'lucide:refresh-cw'"
-                    class="h-4 w-4 mr-2"
-                    :class="refreshing ? 'animate-spin' : ''"
-                  />
-                  {{ t('settings.acp.registryRefresh') }}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  class="h-9 w-9"
-                  :aria-label="t('settings.acp.debug.close')"
-                  @click="registryDialog.open = false"
-                >
-                  <Icon icon="lucide:x" class="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              <div class="relative">
-                <Icon
-                  icon="lucide:search"
-                  class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                />
-                <Input
-                  v-model="registryDialog.search"
-                  class="pl-10"
-                  :placeholder="t('settings.acp.registrySearchPlaceholder')"
-                />
-              </div>
-
-              <div class="flex flex-wrap gap-2">
-                <Button
-                  size="sm"
-                  :variant="registryDialog.filter === 'all' ? 'default' : 'outline'"
-                  @click="registryDialog.filter = 'all'"
-                >
-                  {{ t('settings.acp.installFilters.all') }}
-                </Button>
-                <Button
-                  size="sm"
-                  :variant="registryDialog.filter === 'installed' ? 'default' : 'outline'"
-                  @click="registryDialog.filter = 'installed'"
-                >
-                  {{ t('settings.acp.installFilters.installed') }}
-                </Button>
-                <Button
-                  size="sm"
-                  :variant="registryDialog.filter === 'not_installed' ? 'default' : 'outline'"
-                  @click="registryDialog.filter = 'not_installed'"
-                >
-                  {{ t('settings.acp.installFilters.notInstalled') }}
-                </Button>
-              </div>
-            </div>
-          </DialogHeader>
-
-          <div class="flex-1 overflow-y-auto px-5 py-4">
-            <div
-              v-if="loading && !registryAgents.length"
-              class="text-sm text-muted-foreground text-center py-12"
-            >
-              {{ t('settings.acp.loading') }}
-            </div>
-
-            <div
-              v-else-if="!filteredRegistryCatalogAgents.length"
-              class="text-sm text-muted-foreground text-center py-12"
-            >
-              {{ t('settings.acp.registryOverlayEmpty') }}
-            </div>
-
-            <div v-else class="space-y-3">
-              <div
-                v-for="agent in filteredRegistryCatalogAgents"
-                :key="agent.id"
-                class="rounded-xl border px-4 py-4 bg-card flex items-start gap-4"
-              >
-                <AcpAgentIcon
-                  :agent-id="agent.id"
-                  :icon="agent.icon"
-                  :alt="agent.name"
-                  :fallback-text="agent.name"
-                  custom-class="h-12 w-12 rounded-xl"
-                />
-
-                <div class="min-w-0 flex-1 space-y-3">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="min-w-0 space-y-1">
-                      <div class="flex items-center gap-2 min-w-0">
-                        <div class="text-lg font-semibold truncate">{{ agent.name }}</div>
-                        <span class="text-sm text-muted-foreground shrink-0">
-                          v{{ agent.version }}
-                        </span>
-                      </div>
-                      <p class="text-sm text-muted-foreground line-clamp-2">
-                        {{
-                          agent.description || t('settings.acp.builtinHint', { name: agent.name })
-                        }}
-                      </p>
-                    </div>
-
-                    <Button
-                      size="sm"
-                      :variant="registryActionVariant(agent)"
-                      :disabled="isRegistryActionDisabled(agent)"
-                      @click="handleRegistryCatalogAction(agent)"
-                    >
-                      <Icon
-                        :icon="registryActionIcon(agent)"
-                        class="h-4 w-4 mr-2"
-                        :class="registryActionSpins(agent) ? 'animate-spin' : ''"
-                      />
-                      {{ registryActionLabel(agent) }}
-                    </Button>
-                  </div>
-
-                  <div class="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                    <span>{{ t('settings.model.form.id.label') }}: {{ agent.id }}</span>
-                    <Badge :class="installBadgeClass(agent)" variant="outline">
-                      {{ installBadgeLabel(agent) }}
-                    </Badge>
-                    <a
-                      v-if="agent.repository"
-                      :href="agent.repository"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      class="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    >
-                      {{ t('settings.acp.registryRepository') }}
-                      <Icon icon="lucide:external-link" class="h-3.5 w-3.5" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-
     <AlertDialog
       :open="uninstallDialog.open"
       @update:open="(value) => handleRegistryUninstallDialogOpenChange(value)"
@@ -596,7 +413,6 @@ import type { AcpManualAgent, AcpRegistryAgent } from '@shared/presenter'
 import { useI18n } from 'vue-i18n'
 import { useToast } from '@/components/use-toast'
 import { usePresenter } from '@/composables/usePresenter'
-import { Icon } from '@iconify/vue'
 import {
   Card,
   CardContent,
@@ -638,19 +454,16 @@ const { t } = useI18n()
 const { toast } = useToast()
 const configPresenter = usePresenter('configPresenter')
 
-type RegistryDialogFilter = 'all' | 'installed' | 'not_installed'
-
 const acpEnabled = ref(false)
 const toggling = ref(false)
 const loading = ref(false)
-const refreshing = ref(false)
 const manualSaving = ref(false)
 const manualSectionOpen = ref(false)
 const sharedMcpOpen = ref(false)
 const sharedMcpCount = ref(0)
 
-const registryAgents = ref<AcpRegistryAgent[]>([])
 const manualAgents = ref<AcpManualAgent[]>([])
+const registryAgents = ref<AcpRegistryAgent[]>([])
 const envDrafts = reactive<Record<string, string>>({})
 const agentPending = reactive<Record<string, boolean>>({})
 
@@ -669,12 +482,6 @@ const manualDialog = reactive({
   env: '',
   enabled: true,
   selfManagedCompaction: false
-})
-
-const registryDialog = reactive({
-  open: false,
-  search: '',
-  filter: 'all' as RegistryDialogFilter
 })
 
 const uninstallDialog = reactive<{
@@ -768,32 +575,6 @@ const showSharedMcpSection = computed(
   () => installedRegistryAgents.value.length > 0 || manualAgents.value.length > 0
 )
 
-const filteredRegistryCatalogAgents = computed(() => {
-  const keyword = registryDialog.search.trim().toLowerCase()
-
-  return registryAgents.value.filter((agent) => {
-    const matchKeyword =
-      !keyword ||
-      agent.name.toLowerCase().includes(keyword) ||
-      agent.id.toLowerCase().includes(keyword) ||
-      (agent.description ?? '').toLowerCase().includes(keyword)
-
-    if (!matchKeyword) {
-      return false
-    }
-
-    if (registryDialog.filter === 'installed') {
-      return agent.installState?.status === 'installed'
-    }
-
-    if (registryDialog.filter === 'not_installed') {
-      return agent.installState?.status !== 'installed'
-    }
-
-    return true
-  })
-})
-
 const setAgentPending = (agentId: string, pending: boolean) => {
   if (pending) {
     agentPending[agentId] = true
@@ -812,12 +593,6 @@ const handleError = (error: unknown, description?: string, title?: string) => {
   })
 }
 
-const syncEnvDrafts = (agents: AcpRegistryAgent[]) => {
-  agents.forEach((agent) => {
-    envDrafts[agent.id] = stringifyEnvBlock(agent.envOverride)
-  })
-}
-
 const loadSharedMcpCount = async () => {
   sharedMcpCount.value = (await configPresenter.getAcpSharedMcpSelections()).length
 }
@@ -827,20 +602,12 @@ const loadAcpData = async () => {
   try {
     acpEnabled.value = await configPresenter.getAcpEnabled()
     if (!acpEnabled.value) {
-      registryAgents.value = []
       manualAgents.value = []
       sharedMcpCount.value = 0
       return
     }
 
-    const [registryList, manualList] = await Promise.all([
-      configPresenter.listAcpRegistryAgents(),
-      configPresenter.listManualAcpAgents()
-    ])
-
-    registryAgents.value = registryList
-    manualAgents.value = manualList
-    syncEnvDrafts(registryList)
+    manualAgents.value = await configPresenter.listManualAcpAgents()
     await loadSharedMcpCount()
   } catch (error) {
     handleError(error)
@@ -862,18 +629,6 @@ const handleToggle = async (enabled: boolean) => {
     handleError(error)
   } finally {
     toggling.value = false
-  }
-}
-
-const refreshRegistry = async () => {
-  refreshing.value = true
-  try {
-    registryAgents.value = await configPresenter.refreshAcpRegistry(true)
-    syncEnvDrafts(registryAgents.value)
-  } catch (error) {
-    handleError(error)
-  } finally {
-    refreshing.value = false
   }
 }
 
@@ -909,22 +664,6 @@ const saveEnvOverride = async (agent: AcpRegistryAgent) => {
 const clearEnvOverride = async (agent: AcpRegistryAgent) => {
   envDrafts[agent.id] = ''
   await saveEnvOverride(agent)
-}
-
-const installRegistryAgent = async (agent: AcpRegistryAgent) => {
-  setAgentPending(agent.id, true)
-  try {
-    if (agent.installState?.status === 'error') {
-      await configPresenter.repairAcpAgent(agent.id)
-    } else {
-      await configPresenter.ensureAcpAgentInstalled(agent.id)
-    }
-    await loadAcpData()
-  } catch (error) {
-    handleError(error)
-  } finally {
-    setAgentPending(agent.id, false)
-  }
 }
 
 const repairRegistryAgent = async (agent: AcpRegistryAgent) => {
@@ -1061,51 +800,6 @@ const confirmAndDeleteManualAgent = async (agent: AcpManualAgent) => {
   }
 
   await deleteManualAgent(agent)
-}
-
-const openRegistryDialog = () => {
-  registryDialog.open = true
-}
-
-const registryActionLabel = (agent: AcpRegistryAgent) => {
-  const status = agent.installState?.status ?? 'not_installed'
-  if (status === 'installed') return t('settings.acp.registryUninstallAction')
-  if (status === 'installing') return t('settings.acp.installState.installing')
-  if (status === 'error') return t('settings.acp.registryRepair')
-  return t('settings.acp.registryInstallAction')
-}
-
-const registryActionVariant = (agent: AcpRegistryAgent) => {
-  const status = agent.installState?.status ?? 'not_installed'
-  return status === 'installed' ? 'destructive' : 'default'
-}
-
-const registryActionIcon = (agent: AcpRegistryAgent) => {
-  const status = agent.installState?.status ?? 'not_installed'
-  if (status === 'installed') return 'lucide:trash-2'
-  if (status === 'installing') return 'lucide:loader'
-  if (status === 'error') return 'lucide:wrench'
-  return 'lucide:download'
-}
-
-const registryActionSpins = (agent: AcpRegistryAgent) => {
-  return agent.installState?.status === 'installing'
-}
-
-const isRegistryActionDisabled = (agent: AcpRegistryAgent) => {
-  const status = agent.installState?.status ?? 'not_installed'
-  return Boolean(agentPending[agent.id]) || status === 'installing'
-}
-
-const handleRegistryCatalogAction = async (agent: AcpRegistryAgent) => {
-  if (isRegistryActionDisabled(agent)) {
-    return
-  }
-  if ((agent.installState?.status ?? 'not_installed') === 'installed') {
-    await confirmRegistryAgentUninstall(agent)
-    return
-  }
-  await installRegistryAgent(agent)
 }
 
 onMounted(() => {
