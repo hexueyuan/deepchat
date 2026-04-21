@@ -1,7 +1,9 @@
 <template>
   <div class="flex h-full min-h-0 w-full flex-row overflow-hidden">
     <div
-      class="relative flex h-full min-h-0 min-w-0 w-0 flex-1 transition-[width] duration-200 ease-out"
+      class="relative flex h-full min-h-0 min-w-0 transition-[flex] duration-200 ease-out"
+      style="container-type: inline-size"
+      :style="{ flex: chatFlex }"
     >
       <template v-if="isReady">
         <NewThreadPage v-if="pageRouter.currentRoute === 'newThread'" />
@@ -51,6 +53,7 @@ import { useSessionStore } from '@/stores/ui/session'
 import { useAgentStore } from '@/stores/ui/agent'
 import { useSidebarStore } from '@/stores/ui/sidebar'
 import { useProjectStore } from '@/stores/ui/project'
+import { useSidepanelStore } from '@/stores/ui/sidepanel'
 
 const { t } = useI18n()
 const pageRouter = usePageRouterStore()
@@ -58,11 +61,18 @@ const sessionStore = useSessionStore()
 const agentStore = useAgentStore()
 const sidebarStore = useSidebarStore()
 const projectStore = useProjectStore()
+const sidepanelStore = useSidepanelStore()
 const isReady = ref(false)
 const showCollapsedNewChatButton = computed(
   () =>
     isReady.value && sidebarStore.collapsed && Boolean(sessionStore.newConversationTargetAgentId)
 )
+
+const chatFlex = computed(() => {
+  if (!sidepanelStore.open) return '1 1 0%'
+  const chatPct = (1 - sidepanelStore.ratio) * 100
+  return `${chatPct} ${chatPct} 0%`
+})
 
 const handleCollapsedNewChat = () => {
   void sessionStore.startNewConversation({ refresh: true })
