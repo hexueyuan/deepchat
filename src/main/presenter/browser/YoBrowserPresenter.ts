@@ -362,6 +362,15 @@ export class YoBrowserPresenter implements IYoBrowserPresenter {
     const sessionId = state.sessionId
     const getState = () => this.sessionBrowsers.get(sessionId)
 
+    contents.setWindowOpenHandler(({ url }) => {
+      if (url && url !== 'about:blank') {
+        contents.loadURL(url).catch((err) => {
+          console.error(`[YoBrowser] Failed to navigate to ${url}`, err)
+        })
+      }
+      return { action: 'deny' }
+    })
+
     contents.on('did-navigate', (_event, url) => {
       const current = getState()
       if (!current) {
