@@ -12,7 +12,7 @@ describe('sidepanel store', () => {
       value: innerWidth
     })
 
-    const storageRef = ref(520)
+    const storageRef = ref(0.65)
 
     vi.doMock('@vueuse/core', () => ({
       useStorage: () => storageRef
@@ -28,29 +28,27 @@ describe('sidepanel store', () => {
     }
   }
 
-  it('clamps width to the resolved maximum on narrow viewports', async () => {
-    const { store, storageRef } = await setupSidepanelStore(500)
-
-    store.setWidth(640)
-    expect(storageRef.value).toBe(310)
-    expect(store.width).toBe(310)
+  it('exposes ratio instead of pixel width', async () => {
+    const { store } = await setupSidepanelStore(1200)
+    expect(store.ratio).toBeCloseTo(0.65)
   })
 
-  it('reclamps width when the viewport shrinks', async () => {
+  it('clamps ratio to max 0.8 (workspace max 80%)', async () => {
     const { store, storageRef } = await setupSidepanelStore(1200)
+    store.setRatio(0.95)
+    expect(storageRef.value).toBe(0.8)
+    expect(store.ratio).toBe(0.8)
+  })
 
-    store.setWidth(640)
-    expect(storageRef.value).toBe(640)
+  it('clamps ratio to min 0.3 (workspace min 30%)', async () => {
+    const { store, storageRef } = await setupSidepanelStore(1200)
+    store.setRatio(0.1)
+    expect(storageRef.value).toBe(0.3)
+    expect(store.ratio).toBe(0.3)
+  })
 
-    Object.defineProperty(window, 'innerWidth', {
-      configurable: true,
-      writable: true,
-      value: 500
-    })
-
-    window.dispatchEvent(new Event('resize'))
-
-    expect(storageRef.value).toBe(310)
-    expect(store.width).toBe(310)
+  it('returns default ratio 0.65', async () => {
+    const { store } = await setupSidepanelStore(1200)
+    expect(store.ratio).toBeCloseTo(0.65)
   })
 })

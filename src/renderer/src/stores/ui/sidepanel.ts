@@ -1,4 +1,4 @@
-import { computed, onScopeDispose, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import type { SidePanelTab, WorkspaceNavSection, WorkspaceViewMode } from '@shared/presenter'
@@ -30,41 +30,22 @@ const createSessionState = (): WorkspaceSessionState => ({
   }
 })
 
+const RATIO_MIN = 0.3
+const RATIO_MAX = 0.8
+
+const clampRatio = (nextRatio: number) => {
+  const value = Number(nextRatio)
+  if (!Number.isFinite(value)) return 0.65
+  return Math.min(RATIO_MAX, Math.max(RATIO_MIN, Math.round(value * 100) / 100))
+}
+
 export const useSidepanelStore = defineStore('sidepanel', () => {
-  const viewportWidth = ref(typeof window === 'undefined' ? 1548 : window.innerWidth)
-
-  const resolveMaxWidth = () => {
-    return Math.min(960, Math.round(viewportWidth.value * 0.62))
-  }
-
-  const clampWidth = (nextWidth: number) => {
-    const maxWidth = resolveMaxWidth()
-    const minWidth = Math.min(420, maxWidth)
-    const widthValue = Number(nextWidth)
-    if (!Number.isFinite(widthValue)) {
-      return Math.min(maxWidth, Math.max(minWidth, 520))
-    }
-    return Math.min(maxWidth, Math.max(minWidth, Math.round(widthValue)))
-  }
-
   const open = ref(false)
   const activeTab = ref<SidePanelTab>('workspace')
-  const width = useStorage('chat-sidepanel-width', 520)
+  const ratio = useStorage('chat-sidepanel-ratio', 0.65)
   const sessionStates = reactive<Record<string, WorkspaceSessionState>>({})
 
-  const normalizedWidth = computed(() => {
-    return clampWidth(Number(width.value))
-  })
-
-  if (typeof window !== 'undefined') {
-    const handleResize = () => {
-      viewportWidth.value = window.innerWidth
-      width.value = clampWidth(Number(width.value))
-    }
-
-    window.addEventListener('resize', handleResize)
-    onScopeDispose(() => window.removeEventListener('resize', handleResize))
-  }
+  const normalizedRatio = computed(() => clampRatio(Number(ratio.value)))
 
   const ensureSessionState = (sessionId: string): WorkspaceSessionState => {
     if (!sessionStates[sessionId]) {
@@ -80,8 +61,8 @@ export const useSidepanelStore = defineStore('sidepanel', () => {
     return ensureSessionState(sessionId)
   }
 
-  const setWidth = (nextWidth: number) => {
-    width.value = clampWidth(nextWidth)
+  const setRatio = (nextRatio: number) => {
+    ratio.value = clampRatio(nextRatio)
   }
 
   const openWorkspace = (sessionId?: string | null) => {
@@ -194,11 +175,13 @@ export const useSidepanelStore = defineStore('sidepanel', () => {
   return {
     open,
     activeTab,
-    width: normalizedWidth,
+    width: normalizedRatio,
+    ratio: normalizedRatio,
     sessionStates,
     ensureSessionState,
     getSessionState,
-    setWidth,
+    setWidth: setRatio,
+    setRatio,
     openWorkspace,
     openBrowser,
     closePanel,
