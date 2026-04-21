@@ -20,3 +20,4 @@ runtime/**/*
 .env.local
 .npmrc
 .claude/settings.local.json
+.superpowers/
