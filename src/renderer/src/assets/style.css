@@ -856,6 +856,13 @@
   }
 }
 
+@layer components {
+  .dc-container-font {
+    font-size: calc(clamp(12px, 2.2cqi, 18px) * var(--dc-font-scale, 1));
+    line-height: calc(clamp(18px, 3.2cqi, 28px) * var(--dc-font-scale, 1));
+  }
+}
+
 @layer utilities {
   [data-slot='switch'] {
     inline-size: calc(2rem / var(--dc-font-scale));
