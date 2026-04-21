@@ -2,7 +2,7 @@
   <TooltipProvider :delay-duration="200">
     <div
       data-testid="window-sidebar"
-      class="flex flex-row h-full shrink-0 window-drag-region transition-all duration-200"
+      class="flex flex-row h-full shrink-0 window-drag-region transition-all duration-300"
       :class="collapsed ? 'w-12' : 'w-[288px]'"
     >
       <!-- Left Column: Agent Icons (48px) -->
