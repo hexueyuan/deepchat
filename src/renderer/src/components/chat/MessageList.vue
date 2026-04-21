@@ -1,6 +1,6 @@
 <template>
   <div class="chat-message-list w-full min-w-0">
-    <div class="mx-auto w-full max-w-5xl space-y-1 px-6 py-6">
+    <div :class="['mx-auto w-full space-y-1 px-6 py-6', messageMaxWidthClass]">
       <template v-for="item in messages" :key="item.id">
         <div
           v-if="isCompactionMessageItem(item)"
@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useSidepanelStore } from '@/stores/ui/sidepanel'
 import MessageItemAssistant from '@/components/message/MessageItemAssistant.vue'
 import MessageBlockAction from '@/components/message/MessageBlockAction.vue'
 import MessageItemUser from '@/components/message/MessageItemUser.vue'
@@ -101,6 +102,8 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const sidepanelStore = useSidepanelStore()
+const messageMaxWidthClass = computed(() => (sidepanelStore.open ? '' : 'max-w-7xl'))
 const traceMessageIdSet = computed(() => new Set(props.traceMessageIds))
 const displayMessages = computed(() =>
   props.messages.filter((item) => !isCompactionMessageItem(item))
