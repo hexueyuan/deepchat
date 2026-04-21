@@ -117,6 +117,10 @@ describe('pageRouter.initialize', () => {
         return {}
       }
     }))
+
+    vi.doMock('@/stores/ui/sidebar', () => ({
+      useSidebarStore: () => ({ setCollapsed: vi.fn() })
+    }))
     ;(window as any).electron = {
       ipcRenderer: {
         on: vi.fn(),
@@ -134,6 +138,14 @@ describe('pageRouter.initialize', () => {
 
     expect(store.route.value).toEqual({ name: 'newThread' })
     expect(store.error.value).toContain('boom')
+  })
+
+  it('collapses the sidebar when initialize finds an active session', async () => {
+    const { store, sidebarStore } = await setupStore({
+      activeAgentSession: { id: 'session-1' }
+    })
+    await store.initialize()
+    expect(sidebarStore.setCollapsed).toHaveBeenCalledWith(true)
   })
 
   it('collapses the sidebar when going to chat', async () => {
