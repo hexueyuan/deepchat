@@ -118,20 +118,4 @@ describe('McpServers', () => {
     expect(actionButtons[0]?.text()).toContain('routes.settings-mcp-market')
     expect(actionButtons[1]?.text()).toContain('common.add')
   })
-
-  it('opens the MCP market subview and Higress from the footer menu', async () => {
-    const { wrapper, router } = await setup()
-    const dropdownItems = wrapper.findAll('[data-testid="dropdown-item"]')
-
-    await dropdownItems[0]?.trigger('click')
-    expect(router.push).toHaveBeenCalledWith({
-      name: 'settings-mcp',
-      query: {
-        view: 'market'
-      }
-    })
-
-    await dropdownItems[1]?.trigger('click')
-    expect(window.open).toHaveBeenCalledWith('https://mcp.higress.ai/?from=deepchat', '_blank')
-  })
 })

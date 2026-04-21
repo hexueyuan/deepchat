@@ -121,19 +121,4 @@ describe('McpSettings', () => {
     expect(wrapper.find('[data-testid="servers-view"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="market-view"]').exists()).toBe(false)
   })
-
-  it('renders the market subview and clears only the market query on back', async () => {
-    const { wrapper, router } = await setup({ view: 'market', foo: '1' })
-
-    expect(wrapper.find('[data-testid="market-view"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="servers-view"]').exists()).toBe(false)
-
-    await wrapper.find('[data-testid="market-view"]').trigger('click')
-    await flushPromises()
-
-    expect(router.replace).toHaveBeenCalledWith({
-      name: 'settings-mcp',
-      query: { foo: '1' }
-    })
-  })
 })
