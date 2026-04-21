@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { usePresenter } from '@/composables/usePresenter'
+import { useSidebarStore } from '@/stores/ui/sidebar'
 
 export type PageRoute = { name: 'newThread' } | { name: 'chat'; sessionId: string }
 type GoToNewThreadOptions = {
@@ -9,6 +10,7 @@ type GoToNewThreadOptions = {
 
 export const usePageRouterStore = defineStore('pageRouter', () => {
   const agentSessionPresenter = usePresenter('agentSessionPresenter')
+  const sidebarStore = useSidebarStore()
 
   // --- State ---
   const route = ref<PageRoute>({ name: 'newThread' })
@@ -24,6 +26,7 @@ export const usePageRouterStore = defineStore('pageRouter', () => {
       const activeAgentSession = await agentSessionPresenter.getActiveSession(webContentsId)
       if (activeAgentSession) {
         route.value = { name: 'chat', sessionId: activeAgentSession.id }
+        sidebarStore.setCollapsed(true)
         return
       }
 
@@ -44,6 +47,7 @@ export const usePageRouterStore = defineStore('pageRouter', () => {
 
   function goToChat(sessionId: string): void {
     route.value = { name: 'chat', sessionId }
+    sidebarStore.setCollapsed(true)
   }
 
   // --- Getters ---

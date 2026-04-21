@@ -6,6 +6,12 @@ const setupStore = async (options?: { activeAgentSession?: { id: string } | null
     getActiveSession: vi.fn().mockResolvedValue(options?.activeAgentSession ?? null)
   }
 
+  const sidebarStore = {
+    collapsed: { value: false },
+    toggleSidebar: vi.fn(),
+    setCollapsed: vi.fn()
+  }
+
   vi.doMock('pinia', async () => {
     const actual = await vi.importActual<typeof import('pinia')>('pinia')
     return {
@@ -19,6 +25,10 @@ const setupStore = async (options?: { activeAgentSession?: { id: string } | null
       if (name === 'agentSessionPresenter') return agentSessionPresenter
       return {}
     }
+  }))
+
+  vi.doMock('@/stores/ui/sidebar', () => ({
+    useSidebarStore: () => sidebarStore
   }))
   ;(window as any).electron = {
     ipcRenderer: {
@@ -35,7 +45,8 @@ const setupStore = async (options?: { activeAgentSession?: { id: string } | null
 
   return {
     store,
-    agentSessionPresenter
+    agentSessionPresenter,
+    sidebarStore
   }
 }
 
@@ -123,5 +134,16 @@ describe('pageRouter.initialize', () => {
 
     expect(store.route.value).toEqual({ name: 'newThread' })
     expect(store.error.value).toContain('boom')
+  })
+
+  it('collapses the sidebar when going to chat', async () => {
+    const { store, sidebarStore } = await setupStore({
+      activeAgentSession: null
+    })
+
+    store.goToChat('session-1')
+
+    expect(sidebarStore.setCollapsed).toHaveBeenCalledWith(true)
+    expect(store.route.value).toEqual({ name: 'chat', sessionId: 'session-1' })
   })
 })
