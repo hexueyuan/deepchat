@@ -1365,7 +1365,8 @@
       "all": "全部",
       "installed": "已安裝",
       "notInstalled": "未安裝"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "skills": {
     "addSkill": "新增技能",

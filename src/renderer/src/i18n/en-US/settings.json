@@ -1383,6 +1383,7 @@
       "healthChecking": "Checking...",
       "healthCheckFailed": "Health check failed"
     },
+    "configOptionUpdateFailed": "Failed to update agent config option.",
     "registryCount": "{count} agents",
     "registryEmpty": "No registry agents are available for the current filters.",
     "registryRefresh": "Refresh Registry",

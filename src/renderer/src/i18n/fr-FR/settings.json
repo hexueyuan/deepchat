@@ -1365,7 +1365,8 @@
       "all": "Tous",
       "installed": "Installés",
       "notInstalled": "Non installés"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "skills": {
     "addSkill": "Ajouter une compétence",

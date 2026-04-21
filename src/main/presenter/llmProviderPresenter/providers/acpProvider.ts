@@ -661,13 +661,19 @@ export class AcpProvider extends BaseLLMProvider {
           break
         }
         case 'newSession': {
+          const fallbackCwd = resolveWorkdir() ?? process.cwd()
           const basePayload: schema.NewSessionRequest = {
-            cwd: resolveWorkdir() ?? process.cwd(),
+            cwd: fallbackCwd,
             mcpServers: []
           }
-          const body = isPlainObject(request.payload)
+          const merged = isPlainObject(request.payload)
             ? { ...basePayload, ...request.payload }
             : basePayload
+          // Ensure cwd is never undefined (payload spread may override with undefined)
+          const body: schema.NewSessionRequest = {
+            ...merged,
+            cwd: merged.cwd ?? fallbackCwd
+          }
           pushEvent({ kind: 'request', action: 'newSession', payload: body })
           const response = await connection.newSession(body)
           activeSessionId = response.sessionId
@@ -941,8 +947,12 @@ export class AcpProvider extends BaseLLMProvider {
     }
 
     if (mapped.configState && currentSession) {
-      currentSession.configState = mapped.configState
-      const legacyModeState = getLegacyModeState(mapped.configState)
+      const mergedConfigState = preserveLegacyConfigOptions(
+        currentSession.configState,
+        mapped.configState
+      )
+      currentSession.configState = mergedConfigState
+      const legacyModeState = getLegacyModeState(mergedConfigState)
       if (legacyModeState) {
         currentSession.availableModes = legacyModeState.availableModes
         currentSession.currentModeId = legacyModeState.currentModeId ?? currentSession.currentModeId
@@ -957,7 +967,7 @@ export class AcpProvider extends BaseLLMProvider {
 
       const updated = this.processManager.updateBoundProcessConfigState(
         conversationId,
-        mapped.configState
+        mergedConfigState
       )
       if (!updated) {
         console.warn(
@@ -969,7 +979,7 @@ export class AcpProvider extends BaseLLMProvider {
         conversationId,
         agentId,
         currentSession.workdir,
-        mapped.configState
+        mergedConfigState
       )
     }
   }

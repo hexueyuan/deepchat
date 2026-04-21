@@ -1365,7 +1365,8 @@
       "all": "همه",
       "installed": "نصب‌شده",
       "notInstalled": "نصب‌نشده"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "skills": {
     "addSkill": "افزودن مهارت",

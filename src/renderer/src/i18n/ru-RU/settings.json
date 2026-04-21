@@ -1365,7 +1365,8 @@
       "all": "All",
       "installed": "Installed",
       "notInstalled": "Not Installed"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "skills": {
     "addSkill": "Добавить навык",

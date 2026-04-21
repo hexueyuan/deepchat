@@ -1401,7 +1401,8 @@
         "permission": "权限",
         "error": "错误"
       }
-    }
+    },
+    "configOptionUpdateFailed": "Agent 配置选项更新失败"
   },
   "rateLimit": {
     "title": "速率限制",

@@ -794,6 +794,7 @@ import {
   type GenerationNumericValidationCode,
   validateGenerationNumericField
 } from '@shared/utils/generationSettingsValidation'
+import { useToast } from '@/components/use-toast'
 import McpIndicator from '@/components/chat-input/McpIndicator.vue'
 import ModelIcon from '@/components/icons/ModelIcon.vue'
 import { usePresenter } from '@/composables/usePresenter'
@@ -857,6 +858,7 @@ const configPresenter = usePresenter('configPresenter')
 const llmproviderPresenter = usePresenter('llmproviderPresenter')
 const agentSessionPresenter = usePresenter('agentSessionPresenter')
 const { t } = useI18n()
+const { toast } = useToast()
 
 const draftModelSelection = ref<ModelSelection | null>(null)
 const permissionMode = ref<PermissionMode>('full_access')
@@ -2302,6 +2304,11 @@ const updateAcpConfigOption = async (configId: string, value: string | boolean) 
       configId,
       value
     )
+    // safeCall returns null on IPC error — skip update to preserve current state
+    if (!updated) {
+      toast({ title: t('common.error'), description: t('settings.acp.configOptionUpdateFailed') })
+      return
+    }
     setCachedAcpConfigState(agentId, updated)
     if (activeAcpSessionId.value !== sessionId) {
       return

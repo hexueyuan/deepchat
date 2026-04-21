@@ -1365,7 +1365,8 @@
       "all": "すべて",
       "installed": "インストール済み",
       "notInstalled": "未インストール"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "skills": {
     "addSkill": "スキル追加",

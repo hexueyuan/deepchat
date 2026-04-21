@@ -1339,7 +1339,8 @@
       "all": "הכול",
       "installed": "מותקנים",
       "notInstalled": "לא מותקנים"
-    }
+    },
+    "configOptionUpdateFailed": "Failed to update agent config option."
   },
   "rateLimit": {
     "title": "מגבלת קצב (Rate Limit)",
