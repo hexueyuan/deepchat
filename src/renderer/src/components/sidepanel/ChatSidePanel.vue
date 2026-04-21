@@ -1,10 +1,11 @@
 <template>
   <div
-    class="relative h-full min-h-0 shrink-0 overflow-hidden transition-[width] duration-200 ease-out"
-    :style="{ width: `${panelWidth}px` }"
+    class="relative h-full min-h-0 shrink-0 overflow-hidden transition-[flex] duration-200 ease-out"
+    :style="{ flex: panelFlex }"
   >
     <aside
       v-if="props.sessionId"
+      style="container-type: inline-size"
       class="absolute inset-y-0 right-0 flex h-full min-h-0 w-full flex-col border-l bg-background shadow-lg transition-all duration-200 ease-out"
       :class="
         shouldShow
@@ -81,7 +82,11 @@ const { t } = useI18n()
 const sidepanelStore = useSidepanelStore()
 
 const shouldShow = computed(() => sidepanelStore.open && Boolean(props.sessionId))
-const panelWidth = computed(() => (shouldShow.value ? sidepanelStore.width : 0))
+const panelFlex = computed(() => {
+  if (!shouldShow.value) return '0 0 0px'
+  const pct = sidepanelStore.ratio * 100
+  return `${pct} ${pct} 0%`
+})
 
 const handleBrowserOpenRequested = (_event: unknown, payload: unknown) => {
   const currentWindowId = window.api.getWindowId?.() ?? null
@@ -104,10 +109,14 @@ const handleBrowserOpenRequested = (_event: unknown, payload: unknown) => {
 
 const startResize = (event: MouseEvent) => {
   const startX = event.clientX
-  const startWidth = sidepanelStore.width
+  const startRatio = sidepanelStore.ratio
+  const containerEl = (event.currentTarget as HTMLElement).closest('.flex.flex-row')
+  const containerWidth = containerEl?.clientWidth ?? window.innerWidth
 
   const onMouseMove = (moveEvent: MouseEvent) => {
-    sidepanelStore.setWidth(startWidth - (moveEvent.clientX - startX))
+    const deltaPx = startX - moveEvent.clientX
+    const deltaRatio = deltaPx / containerWidth
+    sidepanelStore.setRatio(startRatio + deltaRatio)
   }
 
   const onMouseUp = () => {
