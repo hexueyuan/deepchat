@@ -168,7 +168,18 @@ export class McpConfHelper {
     const deprecatedBuiltInServers = [
       'powerpack',
       'deepchat-inmemory/meeting-server',
-      'imageServer'
+      'imageServer',
+      'Artifacts',
+      'bochaSearch',
+      'braveSearch',
+      'difyKnowledge',
+      'ragflowKnowledge',
+      'fastGptKnowledge',
+      'deepchat-inmemory/deep-research-server',
+      'deepchat-inmemory/auto-prompting-server',
+      'deepchat-inmemory/conversation-search-server',
+      'deepchat/apple-server',
+      'nowledge-mem'
     ]
     let hasChanges = false
     const removedBuiltInServers = new Set(this.getRemovedBuiltInServers())
