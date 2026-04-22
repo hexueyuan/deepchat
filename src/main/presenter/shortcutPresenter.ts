@@ -5,6 +5,7 @@ import { SHORTCUT_EVENTS, TRAY_EVENTS } from '../events'
 import { eventBus, SendTarget } from '../eventbus'
 import { defaultShortcutKey, ShortcutKeySetting } from './configPresenter/shortcutKeySettings'
 import { IConfigPresenter, IShortcutPresenter } from '@shared/presenter'
+import logger from '@shared/logger'
 
 export class ShortcutPresenter implements IShortcutPresenter {
   private isActive: boolean = false
@@ -23,7 +24,7 @@ export class ShortcutPresenter implements IShortcutPresenter {
 
   registerShortcuts(): void {
     if (this.isActive) return
-    console.log('reg shortcuts')
+    logger.debug('reg shortcuts')
 
     this.shortcutKeys = {
       ...defaultShortcutKey,
@@ -166,12 +167,12 @@ export class ShortcutPresenter implements IShortcutPresenter {
         }
       })
     }
-    console.log('clean chat history shortcut', this.shortcutKeys.CleanChatHistory)
+    logger.debug('clean chat history shortcut', this.shortcutKeys.CleanChatHistory)
     // Command+L 或 Ctrl+L 清除聊天历史
     if (this.shortcutKeys.CleanChatHistory) {
       globalShortcut.register(this.shortcutKeys.CleanChatHistory, () => {
         const focusedWindow = presenter.windowPresenter.getFocusedWindow()
-        console.log('clean chat history')
+        logger.debug('clean chat history')
         if (focusedWindow?.isFocused()) {
           void presenter.windowPresenter.sendToWebContents(
             focusedWindow.webContents.id,
@@ -185,7 +186,7 @@ export class ShortcutPresenter implements IShortcutPresenter {
     if (this.shortcutKeys.DeleteConversation) {
       globalShortcut.register(this.shortcutKeys.DeleteConversation, () => {
         const focusedWindow = presenter.windowPresenter.getFocusedWindow()
-        console.log('delete conversation')
+        logger.debug('delete conversation')
         if (focusedWindow?.isFocused()) {
           void presenter.windowPresenter.sendToWebContents(
             focusedWindow.webContents.id,
@@ -211,7 +212,7 @@ export class ShortcutPresenter implements IShortcutPresenter {
   }
 
   unregisterShortcuts(): void {
-    console.log('unreg shortcuts')
+    logger.debug('unreg shortcuts')
     globalShortcut.unregisterAll()
 
     this.showHideWindow()

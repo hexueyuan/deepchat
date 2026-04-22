@@ -654,6 +654,7 @@ const message = ref('')
 const attachedFiles = ref<MessageFile[]>([])
 const chatInputRef = ref<{ triggerAttach: () => void } | null>(null)
 const isHandlingInteraction = ref(false)
+const isSubmitting = ref(false)
 
 const handleContextMenuAskAI = (event: Event) => {
   if (isReadOnlySession.value) {
@@ -813,6 +814,7 @@ const isInputSubmitDisabled = computed(
     isAcpWorkdirMissing.value ||
     Boolean(activePendingInteraction.value) ||
     isHandlingInteraction.value ||
+    isSubmitting.value ||
     pendingInputStore.isAtCapacity ||
     !hasDraftInput.value
 )
@@ -828,24 +830,35 @@ async function onSubmit() {
   if (isReadOnlySession.value) return
   if (isAcpWorkdirMissing.value) return
   if (activePendingInteraction.value || isHandlingInteraction.value) return
+  if (isSubmitting.value) return
   const text = message.value.trim()
   const files = [...attachedFiles.value]
   if (!text && files.length === 0) return
-  await pendingInputStore.queueInput(props.sessionId, { text, files })
+  isSubmitting.value = true
   message.value = ''
   attachedFiles.value = []
+  try {
+    await pendingInputStore.queueInput(props.sessionId, { text, files })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 async function onCommandSubmit(command: string) {
   if (isReadOnlySession.value) return
   if (isAcpWorkdirMissing.value) return
   if (activePendingInteraction.value || isHandlingInteraction.value) return
+  if (isSubmitting.value) return
   const text = command.trim()
   if (!text) return
-
   const files = [...attachedFiles.value]
-  await pendingInputStore.queueInput(props.sessionId, { text, files })
+  isSubmitting.value = true
   attachedFiles.value = []
+  try {
+    await pendingInputStore.queueInput(props.sessionId, { text, files })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 function onAttach() {

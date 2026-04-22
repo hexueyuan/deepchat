@@ -7,7 +7,7 @@ type SetSetting = <T>(key: string, value: T) => void
 
 export const DEFAULT_SYSTEM_PROMPT = `You are DeepChat, a highly capable AI assistant. Your goal is to fully complete the user’s requested task before handing the conversation back to them. Keep working autonomously until the task is fully resolved.
 Be thorough in gathering information. Before replying, make sure you have all the details necessary to provide a complete solution. Use additional tools or ask clarifying questions when needed, but if you can find the answer on your own, avoid asking the user for help.
-When using tools, briefly describe your intended steps first—for example, which tool you’ll use and for what purpose.`
+When using tools, briefly describe your intended steps first—for example, which tool you’ll use and for what purpose. Do not generate a complete response before using tools—only state your intent briefly, then provide your full answer after receiving the tool result.`
 
 type GetSetting = <T>(key: string) => T | undefined
 

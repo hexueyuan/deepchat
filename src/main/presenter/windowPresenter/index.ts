@@ -32,6 +32,7 @@ import windowStateManager from 'electron-window-state' // Window state manager
 // TrayPresenter is globally managed in main/index.ts, this Presenter is not responsible for its lifecycle
 import { TabPresenter } from '../tabPresenter' // TabPresenter type
 import { FloatingChatWindow } from './FloatingChatWindow' // Floating chat window
+import logger from '@shared/logger'
 import type { ProviderInstallPreview } from '@shared/providerDeeplink'
 
 type PendingSettingsMessage = {
@@ -714,7 +715,7 @@ export class WindowPresenter implements IWindowPresenter {
 
     // 窗口获得焦点
     appWindow.on('focus', () => {
-      console.log(`Window ${windowId} gained focus.`)
+      logger.debug(`Window ${windowId} gained focus.`)
       this.focusedWindowId = windowId
       eventBus.sendToMain(WINDOW_EVENTS.WINDOW_FOCUSED, windowId)
       if (!appWindow.isDestroyed()) {
@@ -724,7 +725,7 @@ export class WindowPresenter implements IWindowPresenter {
 
     // 窗口失去焦点
     appWindow.on('blur', () => {
-      console.log(`Window ${windowId} lost focus.`)
+      logger.debug(`Window ${windowId} lost focus.`)
       if (this.focusedWindowId === windowId) {
         this.focusedWindowId = null // 仅当失去焦点的窗口是当前记录的焦点窗口时才清空
       }

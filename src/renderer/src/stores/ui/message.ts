@@ -17,6 +17,48 @@ import { bindMessageStoreIpc } from './messageIpc'
 
 const EPHEMERAL_STREAM_MESSAGE_PREFIXES = ['__rate_limit__:']
 
+function hasUnclosedArtifactTag(content: string): boolean {
+  const openCount = (content.match(/<antArtifact[\s>]/g) || []).length
+  const closeCount = (content.match(/<\/antArtifact>/g) || []).length
+  return openCount > closeCount
+}
+
+function mergeConsecutiveContentBlocks(
+  blocks: DisplayAssistantMessageBlock[]
+): DisplayAssistantMessageBlock[] {
+  if (blocks.length <= 1) return blocks
+
+  const result: DisplayAssistantMessageBlock[] = []
+
+  for (const block of blocks) {
+    const prev = result[result.length - 1]
+
+    if (
+      prev &&
+      prev.type === 'content' &&
+      block.type === 'content' &&
+      prev.status !== 'pending' &&
+      prev.status !== 'loading' &&
+      block.status !== 'pending' &&
+      block.status !== 'loading' &&
+      !hasUnclosedArtifactTag(prev.content ?? '')
+    ) {
+      const mergedContent = [prev.content ?? '', block.content ?? ''].filter(Boolean).join('\n\n')
+
+      result[result.length - 1] = {
+        ...block,
+        content: mergedContent,
+        timestamp: block.timestamp,
+        extra: block.extra ?? prev.extra
+      }
+    } else {
+      result.push(block)
+    }
+  }
+
+  return result
+}
+
 type ParsedMessageCacheEntry = {
   updatedAt: number
   content: string
@@ -98,7 +140,7 @@ export const useMessageStore = defineStore('message', () => {
 
     try {
       const parsed = JSON.parse(record.content) as DisplayAssistantMessageBlock[]
-      entry.assistantBlocks = Array.isArray(parsed) ? parsed : []
+      entry.assistantBlocks = Array.isArray(parsed) ? mergeConsecutiveContentBlocks(parsed) : []
     } catch {
       entry.assistantBlocks = []
     }

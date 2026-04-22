@@ -426,6 +426,10 @@ export class ToolPresenter implements IToolPresenter {
       }
     }
 
+    lines.push(
+      'When you need to use tools, state your intent briefly, then call the tool. Provide your substantive response only after receiving the tool result.'
+    )
+
     return lines.join('\n')
   }
 

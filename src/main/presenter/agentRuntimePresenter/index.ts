@@ -3354,7 +3354,7 @@ export class AgentRuntimePresenter implements IAgentImplementation {
       ...block.extra,
       needsUserAction: false,
       questionResolution: 'replied',
-      ...(answerText ? { answerText } : {})
+      ...(answerText !== undefined ? { answerText } : {})
     }
   }
 
