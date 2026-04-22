@@ -15,6 +15,7 @@
           :is-temporary="isTemporarySession"
           :is-generating="isGenerating"
           :generating-phase-text="generatingPhaseText"
+          :generating-phase="generatingPhase"
         />
         <div v-if="isChatSearchOpen" class="pointer-events-none sticky top-14 z-20 px-6">
           <div :class="['mx-auto flex w-full justify-end', contentMaxWidthClass]">
@@ -38,6 +39,7 @@
             :ephemeral-rate-limit-message-id="ephemeralRateLimitMessageId"
             :is-generating="isGenerating"
             :generating-phase-text="generatingPhaseText"
+            :generating-phase="generatingPhase"
             :trace-message-ids="traceMessageIds"
             :is-read-only="isReadOnlySession"
             @retry="onMessageRetry"
@@ -168,7 +170,7 @@ const sessionTitle = computed(() => sessionStore.activeSession?.title ?? t('comm
 const sessionProject = computed(() => sessionStore.activeSession?.projectDir ?? '')
 const isReadOnlySession = computed(() => sessionStore.activeSession?.sessionKind === 'subagent')
 const isTemporarySession = computed(() => sessionStore.activeSession?.isTemporary === true)
-const { isGenerating, generatingPhaseText } = useGeneratingPhase()
+const { isGenerating, generatingPhase, generatingPhaseText } = useGeneratingPhase()
 const RATE_LIMIT_STREAM_MESSAGE_PREFIX = '__rate_limit__:'
 const isAcpWorkdirMissing = computed(() => {
   const activeSession = sessionStore.activeSession

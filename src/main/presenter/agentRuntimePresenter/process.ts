@@ -13,6 +13,7 @@ import { startEcho } from './echo'
 import { executeTools, finalize, finalizeError, finalizePaused } from './dispatch'
 
 const MAX_TOOL_CALLS = 128
+const MAX_EMPTY_RESPONSE_RETRIES = 2
 const UNKNOWN_CONTEXT_LIMIT = Number.MAX_SAFE_INTEGER
 const CONTEXT_WINDOW_ERROR_PATTERNS = [
   'context length',
@@ -317,6 +318,7 @@ export async function processStream(params: ProcessParams): Promise<ProcessResul
   const conversationMessages = [...messages]
   let currentTools = [...tools]
   let toolCallCount = 0
+  let emptyResponseRetries = 0
 
   console.log(
     `[ProcessStream] start session=${io.sessionId} message=${io.messageId} provider=${providerId} model=${modelId}`
@@ -387,7 +389,17 @@ export async function processStream(params: ProcessParams): Promise<ProcessResul
           usage: buildUsageSnapshot(state)
         }
       }
-      if (state.stopReason !== 'tool_use') break
+      if (state.stopReason !== 'tool_use') {
+        // Retry on empty response (model returned nothing useful)
+        if (state.blocks.length === 0 && emptyResponseRetries < MAX_EMPTY_RESPONSE_RETRIES) {
+          emptyResponseRetries++
+          console.log(
+            `[ProcessStream] empty response, retrying (${emptyResponseRetries}/${MAX_EMPTY_RESPONSE_RETRIES}) session=${io.sessionId}`
+          )
+          continue
+        }
+        break
+      }
       if (state.completedToolCalls.length === 0) break
 
       // Check max tool call limit

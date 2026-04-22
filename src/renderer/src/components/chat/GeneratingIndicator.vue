@@ -1,14 +1,31 @@
 <template>
-  <div class="generating-indicator">
+  <div class="generating-indicator" :style="phaseColorStyle">
     <span class="generating-dot" />
     <span class="generating-text">{{ text }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   text: string
+  phase?: string
 }>()
+
+const phaseColors: Record<string, string> = {
+  preparing: '220 14% 60%',
+  thinking: '265 90% 66%',
+  toolCalling: '25 95% 60%',
+  searching: '200 90% 55%',
+  generating: '145 65% 50%',
+  working: '220 14% 60%'
+}
+
+const phaseColorStyle = computed(() => {
+  const hsl = phaseColors[props.phase ?? ''] ?? phaseColors.working
+  return { '--generating-phase-color': hsl }
+})
 </script>
 
 <style scoped>
@@ -22,13 +39,13 @@ defineProps<{
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: hsl(var(--primary));
+  background: hsl(var(--generating-phase-color));
   animation: generating-breathe 2s ease-in-out infinite;
 }
 
 .generating-text {
   font-size: 12px;
-  color: hsl(var(--muted-foreground));
+  color: hsl(var(--generating-phase-color));
   animation: generating-breathe 2s ease-in-out infinite;
 }
 

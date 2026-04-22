@@ -31,6 +31,7 @@
       <GeneratingIndicator
         v-if="isGenerating && generatingPhaseText"
         :text="generatingPhaseText"
+        :phase="generatingPhase"
         class="shrink-0"
       />
     </div>
@@ -238,6 +239,7 @@ const props = defineProps<{
   isTemporary?: boolean
   isGenerating?: boolean
   generatingPhaseText?: string
+  generatingPhase?: string
 }>()
 
 const attrs = useAttrs()

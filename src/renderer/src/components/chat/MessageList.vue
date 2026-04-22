@@ -54,6 +54,7 @@
       <GeneratingIndicator
         v-if="isGenerating && generatingPhaseText"
         :text="generatingPhaseText"
+        :phase="generatingPhase"
         class="pl-11 pt-2"
       />
     </div>
@@ -86,6 +87,7 @@ const props = withDefaults(
     ephemeralRateLimitMessageId?: string | null
     isGenerating?: boolean
     generatingPhaseText?: string
+    generatingPhase?: string
     traceMessageIds?: string[]
     isReadOnly?: boolean
   }>(),
@@ -95,6 +97,7 @@ const props = withDefaults(
     ephemeralRateLimitMessageId: null,
     isGenerating: false,
     generatingPhaseText: '',
+    generatingPhase: '',
     traceMessageIds: () => [],
     isReadOnly: false
   }
